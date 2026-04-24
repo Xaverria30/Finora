@@ -291,3 +291,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
               letterSpacing: 1.2,
             ), // TextStyle
           ), // Text
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildActionIcon(
+                icon: Icons.add,
+                label: 'Transaksi',
+                color: const Color(0xFFE93188),
+                bgColor: const Color(0xFFFCE4EC),
+              ),
+              _buildActionIcon(
+                icon: Icons.bar_chart_rounded,
+                label: 'Anggaran',
+                color: const Color(0xFF9575CD),
+                bgColor: const Color(0xFFEDE7F6),
+              ),
+              _buildActionIcon(
+                icon: Icons.savings_outlined,
+                label: 'Tabungan',
+                color: const Color(0xFF81C784),
+                bgColor: const Color(0xFFE8F5E9),
+              ),
+              _buildActionIcon(
+                icon: Icons.track_changes_outlined,
+                label: 'Target',
+                color: const Color(0xFFFFB74D),
+                bgColor: const Color(0xFFFFF3E0),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
