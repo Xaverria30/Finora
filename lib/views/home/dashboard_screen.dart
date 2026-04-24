@@ -402,18 +402,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
-                    ),
-                  ),
+                    ), // TextStyle
+                  ), // Text
                   SizedBox(height: 4),
                   Text(
                     'Bulan ini',
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 12,
-                    ),
-                  ),
+                    ), // TextStyle
+                  ), // Text
                 ],
-              ),
+              ), // Column
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
@@ -424,7 +424,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Icons.bar_chart_rounded,
                   color: Color(0xFFE93188),
                   size: 20,
-                ),
-              ),
+                ), // Icon
+              ), // Container
             ],
-          ),
+          ), // Row
+          const SizedBox(height: 32),
+          SizedBox(
+            height: 200,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                PieChart(
+                  PieChartData(
+                    sections: chartData,
+                    centerSpaceRadius: 65,
+                    sectionsSpace: 0,
+                    startDegreeOffset: -90,
+                  ), // PieChartData
+                ), // PieChart
+              ],
+            ), // Stack
+          ), // SizedBox
