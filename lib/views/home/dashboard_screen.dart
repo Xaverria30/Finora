@@ -475,6 +475,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
-          ),
-        ),
+          ), // BoxDecoration
+        ), // Container
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ), // TextStyle
+        ), // Text
 
