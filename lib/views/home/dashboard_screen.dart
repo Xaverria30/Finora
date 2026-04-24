@@ -135,5 +135,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.white70,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                          ), // TextStyle
+                        ), // Text
+                        SizedBox(height: 4),
+                        Text(
+                          'Mock User',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ), // TextStyle
+                        ), // Text
+                      ],
+                    ), // Column
