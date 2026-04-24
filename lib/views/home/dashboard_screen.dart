@@ -414,3 +414,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFCE4EC),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.bar_chart_rounded,
+                  color: Color(0xFFE93188),
+                  size: 20,
+                ),
+              ),
+            ],
+          ),
