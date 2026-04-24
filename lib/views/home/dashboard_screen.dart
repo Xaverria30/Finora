@@ -230,3 +230,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              shape: BoxShape.circle,
+            ), // BoxDecoration
+            child: Icon(icon, color: iconColor, size: 20),
+          ), // Container
