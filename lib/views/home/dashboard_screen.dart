@@ -466,5 +466,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color color,
     required String label,
     required String amount,
-  }) 
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
 
