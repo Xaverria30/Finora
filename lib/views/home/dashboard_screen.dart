@@ -163,3 +163,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ), // Row
               ), // Padding
+              const SizedBox(height: 16),
+              // Horizontal scrollable cards
+              SizedBox(
+                height: 130, // Adjust card height
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  children: [
+                    _buildSummaryCard(
+                      title: 'Saldo',
+                      amount: balance,
+                      amountColor: const Color(0xFFE93188),
+                      icon: Icons.account_balance_wallet_outlined,
+                      iconColor: const Color(0xFFE93188),
+                      iconBgColor: const Color(0xFFFCE4EC),
+                    ),
+                        _buildSummaryCard(
+                      title: 'Pemasukan',
+                      amount: income,
+                      amountColor: const Color(0xFF4DB6AC),
+                      icon: Icons.trending_up_rounded,
+                      iconColor: const Color(0xFF4DB6AC),
+                      iconBgColor: const Color(0xFFE0F2F1),
+                    ),
+                    _buildSummaryCard(
+                      title: 'Pengeluaran',
+                      amount: expense,
+                      amountColor: const Color(0xFFE57373),
+                      icon: Icons.trending_down_rounded,
+                      iconColor: const Color(0xFFE57373),
+                      iconBgColor: const Color(0xFFFFEBEE),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }    
+
