@@ -148,3 +148,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ), // Text
                       ],
                     ), // Column
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ), // Icon
+                    ), // Container
+                  ],
+                ), // Row
+              ), // Padding
+              const SizedBox(height: 16),
+              // Horizontal scrollable cards
+              SizedBox(
+                height: 130, // Adjust card height
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  children: [
+                    _buildSummaryCard(
+                      title: 'Saldo',
+                      amount: balance,
+                      amountColor: const Color(0xFFE93188),
+                      icon: Icons.account_balance_wallet_outlined,
+                      iconColor: const Color(0xFFE93188),
+                      iconBgColor: const Color(0xFFFCE4EC),
+                    ),
+                        _buildSummaryCard(
+                      title: 'Pemasukan',
+                      amount: income,
+                      amountColor: const Color(0xFF4DB6AC),
+                      icon: Icons.trending_up_rounded,
+                      iconColor: const Color(0xFF4DB6AC),
+                      iconBgColor: const Color(0xFFE0F2F1),
+                    ),
+                    _buildSummaryCard(
+                      title: 'Pengeluaran',
+                      amount: expense,
+                      amountColor: const Color(0xFFE57373),
+                      icon: Icons.trending_down_rounded,
+                      iconColor: const Color(0xFFE57373),
+                      iconBgColor: const Color(0xFFFFEBEE),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }    
+
+  Widget _buildSummaryCard({
+    required String title,
+    required double amount,
+    required Color amountColor,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBgColor,
+  }) {
+    // Format currency to Rp string.
+    final formattedAmount = 'Rp${amount.toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}';
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ),
+        ],
+      ),
