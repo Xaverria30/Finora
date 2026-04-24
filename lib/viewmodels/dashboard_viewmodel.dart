@@ -45,3 +45,28 @@ class DashboardViewModel extends ChangeNotifier {
         }
       }
 
+      final balance = totalIncome - totalExpense;
+      final netCashFlow = totalIncome - totalExpense;
+
+      _summary = {
+        'balance': balance,
+        'income': totalIncome,
+        'expense': totalExpense,
+        'netCashFlow': netCashFlow,
+      };
+
+      _analytics = {
+        'categoryExpenses': categoryExpenses.entries
+            .map((e) => {'category': e.key, 'amount': e.value})
+            .toList(),
+      };
+
+      _recentTransactions = transactions.take(5).toList();
+    } catch (e) {
+      _errorMessage = 'Failed to load dashboard data';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
