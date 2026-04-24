@@ -23,7 +23,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -50,3 +50,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             );
           }
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(viewModel),
+                const SizedBox(height: 24),
+                _buildQuickActions(),
+                const SizedBox(height: 16),
+                _buildExpenseDistributionSection(viewModel),
+                const SizedBox(height: 24),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildHeader(DashboardViewModel viewModel) {
+    final summary = viewModel.summary;
+    final balance = summary['balance'] as double? ?? 9875000.0;
+    final income = summary['income'] as double? ?? 10000000.0;
+    final expense = summary['expense'] as double? ?? 125000.0; // Mocked for preview
