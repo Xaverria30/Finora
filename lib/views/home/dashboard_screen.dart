@@ -264,4 +264,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  
+  Widget _buildQuickActions() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ), // BoxShadow
+        ],
+      ), // BoxDecoration
+      
