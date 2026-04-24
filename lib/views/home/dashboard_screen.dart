@@ -212,4 +212,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required IconData icon,
     required Color iconColor,
     required Color iconBgColor,
-  })
+  }) {
+    // Format currency to Rp string.
+    final formattedAmount = 'Rp${amount.toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}';
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ),
+        ],
+      ),
