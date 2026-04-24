@@ -355,3 +355,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ],
     );
   }
+
+  Widget _buildExpenseDistributionSection(DashboardViewModel viewModel) {
+    // Mock data based on the design
+    final chartData = [
+      PieChartSectionData(
+        color: const Color(0xFFE93188),
+        value: 60,
+        title: '',
+        radius: 35,
+      ),
+      PieChartSectionData(
+        color: const Color(0xFFF48FB1),
+        value: 40,
+        title: '',
+        radius: 35,
+      ),
+    ];
