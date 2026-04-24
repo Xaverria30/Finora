@@ -486,4 +486,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             fontWeight: FontWeight.w500,
           ), // TextStyle
         ), // Text
+        const Spacer(),
+        Text(
+          amount,
+          style: const TextStyle(
+            color: Colors.black87,
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
