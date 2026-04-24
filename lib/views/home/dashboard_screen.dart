@@ -404,3 +404,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: Colors.black87,
                     ),
                   ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Bulan ini',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
