@@ -148,3 +148,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ), // Text
                       ],
                     ), // Column
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ), // Icon
+                    ), // Container
+                  ],
+                ), // Row
+              ), // Padding
