@@ -241,3 +241,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ), // BoxDecoration
             child: Icon(icon, color: iconColor, size: 20),
           ), // Container
+          const Spacer(),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
