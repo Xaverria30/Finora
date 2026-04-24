@@ -205,3 +205,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }    
 
+  Widget _buildSummaryCard({
+    required String title,
+    required double amount,
+    required Color amountColor,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBgColor,
+  })
