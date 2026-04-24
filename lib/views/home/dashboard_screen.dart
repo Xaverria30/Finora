@@ -230,3 +230,105 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              shape: BoxShape.circle,
+            ), // BoxDecoration
+            child: Icon(icon, color: iconColor, size: 20),
+          ), // Container
+          const Spacer(),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            formattedAmount,
+            style: TextStyle(
+              color: amountColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ), // BoxShadow
+        ],
+      ), // BoxDecoration
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'AKSI CEPAT',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.2,
+            ), // TextStyle
+          ), // Text
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildActionIcon(
+                icon: Icons.add,
+                label: 'Transaksi',
+                color: const Color(0xFFE93188),
+                bgColor: const Color(0xFFFCE4EC),
+              ),
+              _buildActionIcon(
+                icon: Icons.bar_chart_rounded,
+                label: 'Anggaran',
+                color: const Color(0xFF9575CD),
+                bgColor: const Color(0xFFEDE7F6),
+              ),
+              _buildActionIcon(
+                icon: Icons.savings_outlined,
+                label: 'Tabungan',
+                color: const Color(0xFF81C784),
+                bgColor: const Color(0xFFE8F5E9),
+              ),
+              _buildActionIcon(
+                icon: Icons.track_changes_outlined,
+                label: 'Target',
+                color: const Color(0xFFFFB74D),
+                bgColor: const Color(0xFFFFF3E0),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionIcon({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Color bgColor,
+  })
