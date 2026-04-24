@@ -325,3 +325,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+  Widget _buildActionIcon({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Color bgColor,
+  })
