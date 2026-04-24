@@ -372,3 +372,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         radius: 35,
       ),
     ];
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ), // BoxShadow
+        ],
+      ), // BoxDecoration
+      
