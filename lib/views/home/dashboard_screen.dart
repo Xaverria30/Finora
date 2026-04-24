@@ -93,3 +93,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         // Overlapping circles for decoration
+        Positioned(
+          top: -50,
+          right: -50,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 50,
+          right: 50,
+          child: Container(
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+        ),
