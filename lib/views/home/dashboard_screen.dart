@@ -462,5 +462,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
+  Widget _buildLegendItem({
+    required Color color,
+    required String label,
+    required String amount,
+  }) 
 
