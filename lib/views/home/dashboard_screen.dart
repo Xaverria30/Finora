@@ -74,3 +74,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final balance = summary['balance'] as double? ?? 9875000.0;
     final income = summary['income'] as double? ?? 10000000.0;
     final expense = summary['expense'] as double? ?? 125000.0; // Mocked for preview
+
+    return Stack(
+      children: [
+        // Pink Background Curve
+        Container(
+          height: 240,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFF960A6), Color(0xFFE93188)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+          ),
+        ),
+        // Overlapping circles for decoration
+        Positioned(
+          top: -50,
+          right: -50,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 50,
+          right: 50,
+          child: Container(
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+        ),
