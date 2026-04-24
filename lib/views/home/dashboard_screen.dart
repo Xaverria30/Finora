@@ -279,4 +279,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ), // BoxShadow
         ],
       ), // BoxDecoration
-      
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'AKSI CEPAT',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.2,
+            ), // TextStyle
+          ), // Text
