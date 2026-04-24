@@ -445,3 +445,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ), // Stack
           ), // SizedBox
+          const SizedBox(height: 32),
+          _buildLegendItem(
+            color: const Color(0xFFE93188),
+            label: 'Makanan & Minuman',
+            amount: 'Rp75.000',
+          ),
+          const SizedBox(height: 12),
+          _buildLegendItem(
+            color: const Color(0xFFF48FB1),
+            label: 'Transportasi',
+            amount: 'Rp50.000',
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
