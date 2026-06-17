@@ -6,6 +6,7 @@ import '../../services/validators.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 import '../widgets/auth_components.dart';
 import 'login_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -44,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer<AuthViewModel>(
         builder: (context, authViewModel, _) {
           return SafeArea(
@@ -59,10 +60,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const FinoraLogo(),
                     const SizedBox(height: 16),
                     Text(
-                      'Kelola keuangan Anda dengan mudah\n& menyenangkan',
+                      AppLocalizations.of(
+                        context,
+                      ).translate('register_tagline'),
                       textAlign: TextAlign.center,
                       style: AppTextStyles.body.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).textTheme.bodySmall?.color,
                         height: 1.4,
                       ),
                     ),
@@ -71,6 +74,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // Auth Switcher
                     AuthTabControl(
                       isLogin: false,
+                      leftLabel: AppLocalizations.of(
+                        context,
+                      ).translate('login'),
+                      rightLabel: AppLocalizations.of(
+                        context,
+                      ).translate('register'),
                       onToggle: (isLogin) {
                         if (isLogin) {
                           Navigator.pushReplacement(
@@ -89,9 +98,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // Input Fields
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.person_outline_rounded),
-                        hintText: 'Nama lengkap',
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.light
+                            ? AppColors.surface
+                            : const Color(0xFF2C2C2C),
+                        prefixIcon: const Icon(Icons.person_outline_rounded),
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).translate('name_hint'),
                       ),
                       validator: Validators.validateName,
                     ),
@@ -99,9 +115,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.email_outlined),
-                        hintText: 'Alamat email',
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.light
+                            ? AppColors.surface
+                            : const Color(0xFF2C2C2C),
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).translate('email_hint'),
                       ),
                       validator: Validators.validateEmail,
                     ),
@@ -110,8 +133,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: _passwordController,
                       obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.light
+                            ? AppColors.surface
+                            : const Color(0xFF2C2C2C),
                         prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        hintText: 'Kata sandi',
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).translate('password_hint'),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
@@ -133,8 +163,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: _confirmPasswordController,
                       obscureText: !_isConfirmPasswordVisible,
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.light
+                            ? AppColors.surface
+                            : const Color(0xFF2C2C2C),
                         prefixIcon: const Icon(Icons.lock_reset_rounded),
-                        hintText: 'Konfirmasi kata sandi',
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).translate('confirm_password'),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isConfirmPasswordVisible
@@ -152,10 +189,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Konfirmasi password tidak boleh kosong';
+                          return AppLocalizations.of(
+                            context,
+                          ).translate('password_confirm_empty');
                         }
                         if (value != _passwordController.text) {
-                          return 'Password tidak cocok';
+                          return AppLocalizations.of(
+                            context,
+                          ).translate('password_mismatch');
                         }
                         return null;
                       },
@@ -164,7 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     // Register Button
                     GradientButton(
-                      text: 'Daftar',
+                      text: AppLocalizations.of(context).translate('register'),
                       icon: Icons.person_add_rounded,
                       isLoading: authViewModel.isLoading,
                       onPressed: () async {
@@ -195,27 +236,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
 
-                    const SizedBox(height: 48),
-                    // Footer
-                    Text.rich(
-                      TextSpan(
-                        text: 'Dengan mendaftar, Anda menyetujui ',
-                        style: AppTextStyles.body.copyWith(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Syarat & Ketentuan',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
                     const SizedBox(height: 24),
                   ],
                 ),

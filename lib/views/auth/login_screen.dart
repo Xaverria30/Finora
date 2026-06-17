@@ -6,6 +6,8 @@ import '../../services/validators.dart';
 import '../../viewmodels/auth_viewmodel.dart';
 import '../widgets/auth_components.dart';
 import 'register_screen.dart';
+import 'forgot_password_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,6 +27,19 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+
+    // Check for existing session
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkSession();
+    });
+  }
+
+  Future<void> _checkSession() async {
+    final authViewModel = context.read<AuthViewModel>();
+    await authViewModel.loadCurrentUser();
+    if (authViewModel.isLoggedIn && mounted) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
   }
 
   @override
@@ -37,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer<AuthViewModel>(
         builder: (context, authViewModel, _) {
           return SafeArea(
@@ -52,10 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     const FinoraLogo(),
                     const SizedBox(height: 16),
                     Text(
-                      'Kelola keuangan Anda dengan mudah\n& menyenangkan',
+                      AppLocalizations.of(context).translate('app_tagline'),
                       textAlign: TextAlign.center,
                       style: AppTextStyles.body.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).textTheme.bodySmall?.color,
                         height: 1.4,
                       ),
                     ),
@@ -64,12 +79,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Auth Switcher
                     AuthTabControl(
                       isLogin: true,
+                      leftLabel: AppLocalizations.of(
+                        context,
+                      ).translate('login'),
+                      rightLabel: AppLocalizations.of(
+                        context,
+                      ).translate('register'),
                       onToggle: (isLogin) {
                         if (!isLogin) {
                           Navigator.pushReplacement(
                             context,
                             PageRouteBuilder(
-                              pageBuilder: (context, anim1, anim2) => const RegisterScreen(),
+                              pageBuilder: (context, anim1, anim2) =>
+                                  const RegisterScreen(),
                               transitionDuration: Duration.zero,
                             ),
                           );
@@ -82,9 +104,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.email_outlined),
-                        hintText: 'Alamat email',
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.light
+                            ? AppColors.surface
+                            : const Color(0xFF2C2C2C),
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).translate('email_hint'),
                       ),
                       validator: Validators.validateEmail,
                     ),
@@ -93,8 +122,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.light
+                            ? AppColors.surface
+                            : const Color(0xFF2C2C2C),
                         prefixIcon: const Icon(Icons.lock_outline_rounded),
-                        hintText: 'Kata sandi',
+                        hintText: AppLocalizations.of(
+                          context,
+                        ).translate('password_hint'),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
@@ -112,24 +148,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: Validators.validatePassword,
                     ),
 
-                    // Forgot Password
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          // TODO: Implement Forgot Password
-                        },
-                        child: const Text(
-                          'Lupa kata sandi?',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 24),
 
                     // Login Button
                     GradientButton(
-                      text: 'Masuk',
+                      text: AppLocalizations.of(context).translate('login'),
                       icon: Icons.auto_awesome_rounded,
                       isLoading: authViewModel.isLoading,
                       onPressed: () async {
@@ -145,6 +168,39 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
 
+                    // Lupa Password
+                    const SizedBox(height: 16),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordScreen(),
+                            ),
+                          );
+                        },
+                        child: RichText(
+                          text: const TextSpan(
+                            text: 'Lupa password? ',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Reset di sini',
+                                style: TextStyle(
+                                  color: Color(0xFFE93188),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
                     if (authViewModel.errorMessage != null)
                       Padding(
                         padding: const EdgeInsets.only(top: AppSpacing.md),
@@ -158,27 +214,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                    const SizedBox(height: 48),
-                    // Footer
-                    Text.rich(
-                      TextSpan(
-                        text: 'Dengan masuk, Anda menyetujui ',
-                        style: AppTextStyles.body.copyWith(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Syarat & Ketentuan',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -190,4 +225,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
