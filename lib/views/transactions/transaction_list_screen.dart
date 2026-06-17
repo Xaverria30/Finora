@@ -4,7 +4,11 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_theme.dart';
 import '../../models/transaction_model.dart';
 import '../../viewmodels/transaction_viewmodel.dart';
+import '../../viewmodels/budget_viewmodel.dart';
+import '../../viewmodels/dashboard_viewmodel.dart';
+import '../../utils/formatters.dart';
 import 'add_transaction_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class TransactionListScreen extends StatefulWidget {
   const TransactionListScreen({super.key});
@@ -15,8 +19,8 @@ class TransactionListScreen extends StatefulWidget {
 
 class _TransactionListScreenState extends State<TransactionListScreen> {
   late TextEditingController _searchController;
-  String _selectedType = 'Semua';
-  String _selectedCategory = 'Semua';
+  String _selectedType = 'all';
+  String _selectedCategory = 'all';
 
   @override
   void initState() {
@@ -37,10 +41,10 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Transaksi',
+        title: Text(
+          AppLocalizations.of(context).translate('transactions'),
           style: TextStyle(
-            color: Color(0xFF1A1C1E),
+            color: Theme.of(context).textTheme.headlineMedium?.color,
             fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
@@ -63,13 +67,15 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? const Color(0xFFF8F9FA)
+                            : const Color(0xFF2C2C2C),
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
-                          hintText: 'Cari transaksi...',
+                          hintText: AppLocalizations.of(context).translate('search_transactions_hint'),
                           hintStyle: TextStyle(color: Colors.grey.shade400),
                           prefixIcon: Icon(Icons.search, color: Colors.grey.shade400),
                           border: InputBorder.none,
@@ -87,11 +93,11 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          _buildFilterPill('Semua'),
+                          _buildFilterPill('all', AppLocalizations.of(context).translate('all')),
                           const SizedBox(width: 10),
-                          _buildFilterPill('Pemasukan'),
+                          _buildFilterPill('income', AppLocalizations.of(context).translate('income')),
                           const SizedBox(width: 10),
-                          _buildFilterPill('Pengeluaran'),
+                          _buildFilterPill('expense', AppLocalizations.of(context).translate('expense')),
                         ],
                       ),
                     ),
@@ -121,31 +127,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                           ],
                         ),
                       )
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
-                        ),
-                        itemCount: transactionVM.transactions.length,
-                        itemBuilder: (context, index) {
-                          final transaction = transactionVM.transactions[index];
-
-                          if (_searchController.text.isNotEmpty &&
-                              !(transaction.description ?? '')
-                                  .toLowerCase()
-                                  .contains(
-                                    _searchController.text.toLowerCase(),
-                                  )) {
-                            return const SizedBox.shrink();
-                          }
-
-                          return _buildTransactionCard(
-                            context,
-                            transaction,
-                            transactionVM,
-                          );
-                        },
-                      ),
+                    : _buildTransactionList(context, transactionVM),
               ),
             ],
           );
@@ -166,23 +148,97 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     );
   }
 
-  Widget _buildFilterPill(String label) {
-    final isSelected = _selectedType == label;
+  Widget _buildTransactionList(
+    BuildContext context,
+    TransactionViewModel transactionVM,
+  ) {
+    // Filter transactions
+    final filteredTransactions = transactionVM.transactions.where((t) {
+      final matchesSearch =
+          _searchController.text.isEmpty ||
+          (t.description ?? '')
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase());
+      final matchesType =
+          _selectedType == 'all' ||
+          (_selectedType == 'income' && t.type == TransactionType.income) ||
+          (_selectedType == 'expense' && t.type == TransactionType.expense);
+      return matchesSearch && matchesType;
+    }).toList();
+
+    // Group by date
+    final Map<String, List<TransactionModel>> grouped = {};
+    for (var t in filteredTransactions) {
+      final dateKey = Formatters.formatDate(t.date);
+      if (!grouped.containsKey(dateKey)) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey]!.add(t);
+    }
+
+    final dateKeys = grouped.keys.toList();
+
+    if (filteredTransactions.isEmpty) {
+      return Center(
+        child: Text(
+          AppLocalizations.of(context).translate('no_transactions_found'),
+          style: TextStyle(color: Colors.grey.shade400),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      itemCount: dateKeys.length,
+      itemBuilder: (context, index) {
+        final date = dateKeys[index];
+        final transactions = grouped[date]!;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8, top: 16, bottom: 8),
+              child: Text(
+                date,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey.shade500,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            ...transactions
+                .map((t) => _buildTransactionCard(context, t, transactionVM))
+                .toList(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFilterPill(String type, String label) {
+    final isSelected = _selectedType == type;
     return GestureDetector(
-      onTap: () => setState(() => _selectedType = label),
+      onTap: () => setState(() => _selectedType = type),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFE93188) : const Color(0xFFF8F9FA),
-          borderRadius: BorderRadius.circular(10),
+          color: isSelected ? AppColors.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey.shade300,
+          ),
         ),
         child: Text(
           label,
           style: TextStyle(
             color: isSelected ? Colors.white : Colors.grey.shade600,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
       ),
@@ -199,7 +255,9 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     final iconBgColor = isIncome ? const Color(0xFFE0F2F1) : const Color(0xFFFCE4EC);
     final iconColor = isIncome ? const Color(0xFF4DB6AC) : const Color(0xFFE93188);
     final statusColor = isIncome ? const Color(0xFFE0F2F1) : const Color(0xFFFCE4EC);
-    final statusText = isIncome ? 'Masuk' : 'Keluar';
+    final statusText = isIncome 
+        ? AppLocalizations.of(context).translate('income') 
+        : AppLocalizations.of(context).translate('expense');
 
     // Format currency
     final formattedAmount = '${isIncome ? '+' : '-'}Rp${transaction.amount.toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}';
@@ -207,7 +265,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(30), // Match the original design's very rounded corners
         boxShadow: [
           BoxShadow(
@@ -252,10 +310,10 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     children: [
                       Text(
                         transaction.description ?? 'Transaction',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1C1E),
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -266,23 +324,17 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8F9FA),
+                              color: Theme.of(context).brightness == Brightness.light
+                                  ? const Color(0xFFF8F9FA)
+                                  : const Color(0xFF2C2C2C),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Text(
-                              transaction.category,
+                              AppLocalizations.getCategoryName(context, transaction.category),
                               style: TextStyle(
                                 fontSize: 11,
                                 color: Colors.grey.shade600,
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            transaction.date.toString().split(' ')[0],
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey.shade400,
                             ),
                           ),
                         ],
@@ -337,22 +389,22 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Detail Transaksi', style: AppTextStyles.headline),
+          Text(AppLocalizations.of(context).translate('transaction_detail'), style: AppTextStyles.headline),
           const SizedBox(height: AppSpacing.lg),
-          _buildDetailRow('Deskripsi', transaction.description ?? 'N/A'),
-          _buildDetailRow('Kategori', transaction.category),
+          _buildDetailRow(AppLocalizations.of(context).translate('description'), transaction.description ?? 'N/A'),
+          _buildDetailRow(AppLocalizations.of(context).translate('category'), AppLocalizations.getCategoryName(context, transaction.category)),
           _buildDetailRow(
-            'Jumlah',
+            AppLocalizations.of(context).translate('amount'),
             'Rp${transaction.amount.toStringAsFixed(0)}',
           ),
-          _buildDetailRow('Tanggal', transaction.date.toString()),
+          _buildDetailRow(AppLocalizations.of(context).translate('date'), transaction.date.toString()),
           const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Tutup'),
+                  child: Text(AppLocalizations.of(context).translate('close')),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -363,23 +415,27 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Hapus Transaksi?'),
-                        content: const Text(
-                          'Apakah Anda yakin ingin menghapus transaksi ini?',
-                        ),
+                        title: Text(AppLocalizations.of(context).translate('delete_transaction_confirm_title')),
+                        content: Text(AppLocalizations.of(context).translate('delete_transaction_confirm_message')),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Batal'),
+                            child: Text(AppLocalizations.of(context).translate('cancel')),
                           ),
                           TextButton(
-                            onPressed: () {
-                              transactionVM.deleteTransaction(transaction.id);
-                              Navigator.pop(context);
+                            onPressed: () async {
+                              final success = await transactionVM.deleteTransaction(transaction.id);
+                              if (success && context.mounted) {
+                                context.read<BudgetViewModel>().loadBudgets();
+                                context.read<DashboardViewModel>().loadDashboardData();
+                              }
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
                             },
-                            child: const Text(
-                              'Hapus',
-                              style: TextStyle(color: AppColors.error),
+                            child: Text(
+                              AppLocalizations.of(context).translate('delete'),
+                              style: const TextStyle(color: AppColors.error),
                             ),
                           ),
                         ],
@@ -387,7 +443,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     );
                   },
                   icon: const Icon(Icons.delete_outline),
-                  label: const Text('Hapus'),
+                  label: Text(AppLocalizations.of(context).translate('delete')),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.error,
                     foregroundColor: Colors.white,
@@ -395,6 +451,28 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AddTransactionScreen(transaction: transaction),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit_outlined),
+              label: Text(AppLocalizations.of(context).translate('edit_transaction')),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
         ],
       ),

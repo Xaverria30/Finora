@@ -4,6 +4,7 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_theme.dart';
 import '../../models/saving_goal_model.dart';
 import '../../viewmodels/saving_viewmodel.dart';
+import '../../l10n/app_localizations.dart';
 import 'add_saving_screen.dart';
 import 'saving_detail_screen.dart';
 
@@ -26,7 +27,7 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBFBFD),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer<SavingViewModel>(
         builder: (context, savingVM, _) {
           if (savingVM.isLoading && savingVM.savingGoals.isEmpty) {
@@ -37,16 +38,16 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             children: [
               const SizedBox(height: 20),
-              const Text(
-                'Target Tabungan',
+              Text(
+                AppLocalizations.of(context).translate('savings_title'),
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1C1E),
+                  color: Theme.of(context).textTheme.headlineMedium?.color,
                 ),
               ),
-              const Text(
-                'Wujudkan impian finansialmu',
+              Text(
+                AppLocalizations.of(context).translate('savings_subtitle'),
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
@@ -70,7 +71,7 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        'Belum ada target tabungan',
+                        AppLocalizations.of(context).translate('no_savings'),
                         style: AppTextStyles.body.copyWith(
                           color: AppColors.onSurface.withValues(alpha: 0.6),
                         ),
@@ -86,7 +87,7 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                           );
                         },
                         icon: const Icon(Icons.add),
-                        label: const Text('Buat Target Pertama'),
+                        label: Text(AppLocalizations.of(context).translate('create_first_target')),
                       ),
                     ],
                   ),
@@ -106,7 +107,7 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
             MaterialPageRoute(builder: (context) => const AddSavingScreen()),
           );
         },
-        tooltip: 'Tambah Target',
+        tooltip: AppLocalizations.of(context).translate('add_target_tooltip'),
         child: const Icon(Icons.add),
       ),
     );
@@ -168,9 +169,9 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                     child: const Icon(Icons.savings_outlined, color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'Ringkasan Tabungan',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context).translate('savings_summary'),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -185,9 +186,9 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Target Total',
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        Text(
+                          AppLocalizations.of(context).translate('total_target'),
+                          style: const TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -205,9 +206,9 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Terkumpul',
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        Text(
+                          AppLocalizations.of(context).translate('collected'),
+                          style: const TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -227,9 +228,9 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Progres keseluruhan',
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  Text(
+                    AppLocalizations.of(context).translate('overall_progress'),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                   Text(
                     '${(progress * 100).toStringAsFixed(1)}%',
@@ -281,7 +282,7 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
       margin: const EdgeInsets.only(top: 16),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
@@ -320,15 +321,22 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                     children: [
                       Text(
                         goal.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1C1E),
+                          color: Theme.of(context).textTheme.titleLarge?.color,
                         ),
                       ),
                       Text(
-                        'Target: ${goal.deadline != null ? goal.deadline.toString().split(' ')[0] : 'No deadline'}',
-                        style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                        AppLocalizations.of(context).translate('target_deadline_label', params: {
+                          'date': goal.deadline != null 
+                              ? goal.deadline.toString().split(' ')[0] 
+                              : AppLocalizations.of(context).translate('no_deadline')
+                        }),
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodySmall?.color,
+                          fontSize: 13,
+                        ),
                       ),
                     ],
                   ),
@@ -348,7 +356,9 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
               height: 10,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F5F5),
+                color: Theme.of(context).brightness == Brightness.light
+                    ? const Color(0xFFF5F5F5)
+                    : const Color(0xFF2C2C2C),
                 borderRadius: BorderRadius.circular(5),
               ),
               child: FractionallySizedBox(
@@ -369,9 +379,9 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'TERKUMPUL',
-                      style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                    Text(
+                      AppLocalizations.of(context).translate('collected_caps'),
+                      style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -387,9 +397,9 @@ class _SavingsListScreenState extends State<SavingsListScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text(
-                      'SISA TARGET',
-                      style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                    Text(
+                      AppLocalizations.of(context).translate('remaining_target_caps'),
+                      style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                     ),
                     const SizedBox(height: 4),
                     Text(

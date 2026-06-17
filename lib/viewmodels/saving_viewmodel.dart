@@ -35,6 +35,7 @@ class SavingViewModel extends ChangeNotifier {
     required String? description,
     required double targetAmount,
     required String deadline,
+    double currentAmount = 0.0,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -46,6 +47,7 @@ class SavingViewModel extends ChangeNotifier {
         description: description,
         targetAmount: targetAmount,
         deadline: deadline,
+        currentAmount: currentAmount,
       );
       _savingGoals.add(newGoal);
       return true;
@@ -91,6 +93,7 @@ class SavingViewModel extends ChangeNotifier {
     required String goalId,
     required double targetAmount,
     required String deadline,
+    double currentAmount = 0.0,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -101,6 +104,7 @@ class SavingViewModel extends ChangeNotifier {
         goalId: goalId,
         targetAmount: targetAmount,
         deadline: deadline,
+        currentAmount: currentAmount,
       );
       final index = _savingGoals.indexWhere((g) => g.id == goalId);
       if (index != -1) {
