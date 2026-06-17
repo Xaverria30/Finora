@@ -4,6 +4,8 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_theme.dart';
 import '../../services/validators.dart';
 import '../../viewmodels/auth_viewmodel.dart';
+import '../../viewmodels/settings_viewmodel.dart';
+import '../../l10n/app_localizations.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -39,168 +41,204 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pengaturan'), elevation: 0),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).translate('settings')),
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Text('Keamanan', style: AppTextStyles.headline),
-            ),
-            ListTile(
-              leading: const Icon(Icons.lock_outlined),
-              title: const Text('Ubah Password'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                setState(() => _showPasswordForm = !_showPasswordForm);
-              },
-            ),
-            if (_showPasswordForm)
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Ubah Password Anda', style: AppTextStyles.label),
-                      const SizedBox(height: AppSpacing.md),
-                      TextFormField(
-                        controller: _oldPasswordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Password Lama',
-                          prefixIcon: Icon(Icons.lock_outline),
-                          hintText: 'Masukkan password lama',
-                        ),
-                        validator: Validators.validatePassword,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      TextFormField(
-                        controller: _newPasswordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Password Baru',
-                          prefixIcon: Icon(Icons.lock_outline),
-                          hintText: 'Masukkan password baru',
-                          helperText: 'Minimal 8 karakter',
-                        ),
-                        validator: Validators.validatePassword,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      TextFormField(
-                        controller: _confirmPasswordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Konfirmasi Password',
-                          prefixIcon: Icon(Icons.lock_outline),
-                          hintText: 'Ulangi password baru',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Konfirmasi password tidak boleh kosong';
-                          }
-                          if (value != _newPasswordController.text) {
-                            return 'Password tidak cocok';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      Consumer<AuthViewModel>(
-                        builder: (context, authVM, _) {
-                          return Column(
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: authVM.isLoading
-                                      ? null
-                                      : () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            _submitPasswordChange(
-                                              context,
-                                              authVM,
-                                            );
-                                          }
-                                        },
-                                  child: authVM.isLoading
-                                      ? const SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  Colors.white,
-                                                ),
-                                          ),
-                                        )
-                                      : const Text('Ubah Password'),
-                                ),
-                              ),
-                              if (authVM.errorMessage != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: AppSpacing.md,
-                                  ),
-                                  child: Text(
-                                    authVM.errorMessage!,
-                                    style: AppTextStyles.body.copyWith(
-                                      color: AppColors.error,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+              child: Text(
+                AppLocalizations.of(context).translate('preferences'),
+                style: AppTextStyles.headline,
               ),
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Text('Preferensi', style: AppTextStyles.headline),
             ),
-            ListTile(
-              leading: const Icon(Icons.notifications_outlined),
-              title: const Text('Notifikasi'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pengaturan notifikasi akan segera tersedia'),
-                  ),
+            Consumer<SettingsViewModel>(
+              builder: (context, settingsVM, _) {
+                return Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.brightness_6_outlined),
+                      title: Text(
+                        AppLocalizations.of(context).translate('theme'),
+                      ),
+                      subtitle: Text(
+                        settingsVM.themeMode == ThemeMode.dark
+                            ? AppLocalizations.of(
+                                context,
+                              ).translate('dark_mode')
+                            : (settingsVM.themeMode == ThemeMode.light
+                                  ? AppLocalizations.of(
+                                      context,
+                                    ).translate('light_mode')
+                                  : AppLocalizations.of(
+                                      context,
+                                    ).translate('system_theme')),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () => _showThemeDialog(context, settingsVM),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.language_outlined),
+                      title: Text(
+                        AppLocalizations.of(context).translate('language'),
+                      ),
+                      subtitle: Text(
+                        settingsVM.locale.languageCode == 'id'
+                            ? 'Bahasa Indonesia'
+                            : 'English',
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () => _showLanguageDialog(context, settingsVM),
+                    ),
+                    Consumer<AuthViewModel>(
+                      builder: (context, authVM, _) {
+                        return ListTile(
+                          leading: const Icon(Icons.monetization_on_outlined),
+                          title: Text(
+                            AppLocalizations.of(context).translate('currency'),
+                          ),
+                          subtitle: Text(authVM.currentUser?.currency ?? 'IDR'),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                          ),
+                          onTap: () => _showCurrencyDialog(context, authVM),
+                        );
+                      },
+                    ),
+                  ],
                 );
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.language_outlined),
-              title: const Text('Bahasa'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pengaturan bahasa akan segera tersedia'),
-                  ),
-                );
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCurrencyDialog(BuildContext context, AuthViewModel authVM) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context).translate('choose_currency')),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<String>(
+              title: const Text('IDR - Indonesian Rupiah'),
+              value: 'IDR',
+              groupValue: authVM.currentUser?.currency,
+              onChanged: (value) async {
+                if (value != null) {
+                  await authVM.updateProfile(
+                    name: authVM.currentUser?.name ?? '',
+                    currency: value,
+                  );
+                  if (context.mounted) Navigator.pop(context);
+                }
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.brightness_6_outlined),
-              title: const Text('Tema'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pengaturan tema akan segera tersedia'),
-                  ),
-                );
+            RadioListTile<String>(
+              title: const Text('USD - US Dollar'),
+              value: 'USD',
+              groupValue: authVM.currentUser?.currency,
+              onChanged: (value) async {
+                if (value != null) {
+                  await authVM.updateProfile(
+                    name: authVM.currentUser?.name ?? '',
+                    currency: value,
+                  );
+                  if (context.mounted) Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showThemeDialog(BuildContext context, SettingsViewModel settingsVM) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context).translate('choose_theme')),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<ThemeMode>(
+              title: Text(AppLocalizations.of(context).translate('light_mode')),
+              value: ThemeMode.light,
+              groupValue: settingsVM.themeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  settingsVM.setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: Text(AppLocalizations.of(context).translate('dark_mode')),
+              value: ThemeMode.dark,
+              groupValue: settingsVM.themeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  settingsVM.setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: Text(
+                AppLocalizations.of(context).translate('system_theme'),
+              ),
+              value: ThemeMode.system,
+              groupValue: settingsVM.themeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  settingsVM.setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context, SettingsViewModel settingsVM) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context).translate('choose_language')),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<String>(
+              title: const Text('Bahasa Indonesia'),
+              value: 'id',
+              groupValue: settingsVM.locale.languageCode,
+              onChanged: (value) {
+                if (value != null) {
+                  settingsVM.setLocale(const Locale('id'));
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<String>(
+              title: const Text('English'),
+              value: 'en',
+              groupValue: settingsVM.locale.languageCode,
+              onChanged: (value) {
+                if (value != null) {
+                  settingsVM.setLocale(const Locale('en'));
+                  Navigator.pop(context);
+                }
               },
             ),
           ],
@@ -224,8 +262,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() => _showPasswordForm = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Password berhasil diubah'),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).translate('password_change_success'),
+          ),
           backgroundColor: AppColors.success,
         ),
       );
