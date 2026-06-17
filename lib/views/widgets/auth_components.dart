@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../config/theme/app_colors.dart';
-import '../../../config/theme/app_theme.dart';
+import '../../config/theme/app_colors.dart';
+import '../../config/theme/app_theme.dart';
 
 class FinoraLogo extends StatelessWidget {
   const FinoraLogo({super.key});
@@ -14,24 +14,21 @@ class FinoraLogo extends StatelessWidget {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: AppColors.primaryGradient,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
+                color: AppColors.primary.withOpacity(0.2),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
             ],
           ),
-          child: const Icon(
-            Icons.flash_on_rounded,
-            color: Colors.white,
-            size: 40,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Image.asset(
+              'android 14.png',
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -52,11 +49,15 @@ class FinoraLogo extends StatelessWidget {
 class AuthTabControl extends StatelessWidget {
   final bool isLogin;
   final Function(bool) onToggle;
+  final String leftLabel;
+  final String rightLabel;
 
   const AuthTabControl({
     super.key,
     required this.isLogin,
     required this.onToggle,
+    this.leftLabel = 'Masuk',
+    this.rightLabel = 'Daftar',
   });
 
   @override
@@ -65,21 +66,25 @@ class AuthTabControl extends StatelessWidget {
       height: 56,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).brightness == Brightness.light
+            ? AppColors.surface
+            : const Color(0xFF2C2C2C),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
           Expanded(
             child: _buildTab(
-              label: 'Masuk',
+              context: context,
+              label: leftLabel,
               isActive: isLogin,
               onTap: () => onToggle(true),
             ),
           ),
           Expanded(
             child: _buildTab(
-              label: 'Daftar',
+              context: context,
+              label: rightLabel,
               isActive: !isLogin,
               onTap: () => onToggle(false),
             ),
@@ -90,6 +95,7 @@ class AuthTabControl extends StatelessWidget {
   }
 
   Widget _buildTab({
+    required BuildContext context,
     required String label,
     required bool isActive,
     required VoidCallback onTap,
@@ -100,16 +106,16 @@ class AuthTabControl extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
-          color: isActive ? Colors.white : Colors.transparent,
+          color: isActive ? Theme.of(context).cardColor : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           boxShadow: isActive
               ? [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ]
               : [],
         ),
         alignment: Alignment.center,
@@ -156,12 +162,12 @@ class GradientButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: onPressed != null
             ? [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
-                ),
-              ]
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ]
             : [],
       ),
       child: ElevatedButton(
@@ -175,31 +181,31 @@ class GradientButton extends StatelessWidget {
         ),
         child: isLoading
             ? const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
+          height: 24,
+          width: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        )
             : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) ...[
-                    Icon(icon, color: Colors.white, size: 20),
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    text,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+            ],
+            Text(
+              text,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
               ),
+            ),
+          ],
+        ),
       ),
     );
   }
