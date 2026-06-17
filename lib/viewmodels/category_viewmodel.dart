@@ -25,13 +25,16 @@ class CategoryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _categories = await categoryRepository.getCategories();
-      _incomeCategories = await categoryRepository.getCategories(
-        type: category_model.CategoryType.income.toString().split('.').last,
-      );
-      _expenseCategories = await categoryRepository.getCategories(
-        type: category_model.CategoryType.expense.toString().split('.').last,
-      );
+      final all = await categoryRepository.getCategories();
+      _categories = all;
+
+      // Filter secara lokal untuk memastikan sinkronisasi UI
+      _incomeCategories = all
+          .where((c) => c.type == category_model.CategoryType.income)
+          .toList();
+      _expenseCategories = all
+          .where((c) => c.type == category_model.CategoryType.expense)
+          .toList();
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
@@ -51,19 +54,15 @@ class CategoryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final newCategory = await categoryRepository.createCategory(
+      await categoryRepository.createCategory(
         name: name,
         icon: icon,
         color: color,
         type: type,
       );
-      _categories.add(newCategory);
 
-      if (newCategory.type == category_model.CategoryType.income) {
-        _incomeCategories.add(newCategory);
-      } else {
-        _expenseCategories.add(newCategory);
-      }
+      // Refresh semua list agar konsisten
+      await loadCategories();
 
       return true;
     } catch (e) {
