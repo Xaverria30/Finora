@@ -25,43 +25,26 @@ class DashboardViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final transactions = await transactionRepository.getTransactions();
+      final results = await Future.wait([
+        transactionRepository.getTransactions(limit: 5),
+        transactionRepository.apiService.getDashboardSummary(),
+        transactionRepository.apiService.getExpenseAnalytics(),
+      ]);
 
-      double totalIncome = 0;
-      double totalExpense = 0;
-      final categoryExpenses = <String, double>{};
-
-      for (final transaction in transactions) {
-        if (transaction.type == TransactionType.income) {
-          totalIncome += transaction.amount;
-        } else if (transaction.type == TransactionType.expense) {
-          totalExpense += transaction.amount;
-          final desc = transaction.description ?? 'Other';
-          categoryExpenses.update(
-            desc,
-            (value) => value + transaction.amount,
-            ifAbsent: () => transaction.amount,
-          );
-        }
-      }
-
-      final balance = totalIncome - totalExpense;
-      final netCashFlow = totalIncome - totalExpense;
+      final transactions = results[0] as List<TransactionModel>;
+      final summaryData = results[1] as Map<String, dynamic>;
+      final analyticsData = results[2] as Map<String, dynamic>;
 
       _summary = {
-        'balance': balance,
-        'income': totalIncome,
-        'expense': totalExpense,
-        'netCashFlow': netCashFlow,
+        'balance': (summaryData['balance'] as num?)?.toDouble() ?? 0.0,
+        'income': (summaryData['totalIncome'] as num?)?.toDouble() ?? 0.0,
+        'expense': (summaryData['totalExpenses'] as num?)?.toDouble() ?? 0.0,
+        'netCashFlow': (summaryData['balance'] as num?)?.toDouble() ?? 0.0,
       };
 
-      _analytics = {
-        'categoryExpenses': categoryExpenses.entries
-            .map((e) => {'category': e.key, 'amount': e.value})
-            .toList(),
-      };
+      _analytics = {'categoryExpenses': analyticsData['data'] ?? []};
 
-      _recentTransactions = transactions.take(5).toList();
+      _recentTransactions = transactions;
     } catch (e) {
       _errorMessage = 'Failed to load dashboard data';
     } finally {
