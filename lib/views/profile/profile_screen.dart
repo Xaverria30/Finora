@@ -7,14 +7,31 @@ import '../../viewmodels/transaction_viewmodel.dart';
 import '../../viewmodels/budget_viewmodel.dart';
 import '../../viewmodels/saving_viewmodel.dart';
 import 'settings_screen.dart';
+import '../categories/category_list_screen.dart';
+import '../../l10n/app_localizations.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (mounted) {
+        context.read<AuthViewModel>().loadCurrentUser();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBFBFD),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         padding: EdgeInsets.zero,
         child: Consumer4<AuthViewModel, TransactionViewModel, BudgetViewModel, SavingViewModel>(
@@ -24,11 +41,9 @@ class ProfileScreen extends StatelessWidget {
 
             return Column(
               children: [
-                // Curved Header & Profile Card
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    // Pink Background Curve
                     Container(
                       height: 240,
                       width: double.infinity,
@@ -44,10 +59,10 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-                      child: const SafeArea(
+                      child: SafeArea(
                         child: Text(
-                          'Profil',
-                          style: TextStyle(
+                          AppLocalizations.of(context).translate('profile'),
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -55,7 +70,6 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Overlapping circles for decoration
                     Positioned(
                       top: -50,
                       right: -50,
@@ -81,13 +95,13 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top: 150, // Card overlaps the curve
+                      top: 150,
                       left: 20,
                       right: 20,
                       child: Container(
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
@@ -127,7 +141,7 @@ class ProfileScreen extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFFFD54F),
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: Colors.white, width: 3),
+                                      border: Border.all(color: Theme.of(context).cardColor, width: 3),
                                     ),
                                     child: const Icon(Icons.star_rounded, color: Colors.white, size: 14),
                                   ),
@@ -139,33 +153,65 @@ class ProfileScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    user?.name ?? 'Mock User',
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF1A1C1E),
-                                    ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          user?.name ?? 'User',
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context).textTheme.headlineSmall?.color,
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () =>
+                                            _showEditProfileDialog(
+                                              context,
+                                              authVM,
+                                            ),
+                                        icon: const Icon(
+                                          Icons.edit_outlined,
+                                          size: 20,
+                                          color: Color(0xFFE93188),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   Text(
-                                    user?.email ?? 'user@mock.com',
-                                    style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                                    user?.email ?? '',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade500,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFCE4EC),
+                                      color: Theme.of(context).brightness == Brightness.light
+                                          ? const Color(0xFFFCE4EC)
+                                          : const Color(0xFFE93188).withOpacity(0.2),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Icon(Icons.verified_user_outlined, color: Color(0xFFE93188), size: 14),
-                                        SizedBox(width: 4),
+                                      children: [
+                                        const Icon(
+                                          Icons.verified_user_outlined,
+                                          color: Color(0xFFE93188),
+                                          size: 14,
+                                        ),
+                                        const SizedBox(width: 4),
                                         Text(
-                                          'Premium Member',
-                                          style: TextStyle(
+                                          AppLocalizations.of(context).translate('premium_member'),
+                                          style: const TextStyle(
                                             color: Color(0xFFE93188),
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
@@ -183,34 +229,42 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 100), // Adjusted space for overlapping card
+                const SizedBox(height: 100),
 
-                // Statistics Row
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
                       _buildStatCard(
+                        context: context,
                         icon: Icons.swap_horiz_rounded,
                         count: transactionVM.transactions.length.toString(),
-                        label: 'Transaksi',
-                        color: const Color(0xFFFCE4EC),
+                        label: AppLocalizations.of(context).translate('transactions_count'),
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? const Color(0xFFFCE4EC)
+                            : const Color(0xFFE93188).withOpacity(0.2),
                         iconColor: const Color(0xFFE93188),
                       ),
                       const SizedBox(width: 12),
                       _buildStatCard(
+                        context: context,
                         icon: Icons.auto_stories_rounded,
                         count: budgetVM.budgets.length.toString(),
-                        label: 'Anggaran',
-                        color: const Color(0xFFF3E5F5),
+                        label: AppLocalizations.of(context).translate('budgets_count'),
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? const Color(0xFFF3E5F5)
+                            : const Color(0xFF9575CD).withOpacity(0.2),
                         iconColor: const Color(0xFF9575CD),
                       ),
                       const SizedBox(width: 12),
                       _buildStatCard(
+                        context: context,
                         icon: Icons.savings_rounded,
                         count: savingVM.savingGoals.length.toString(),
-                        label: 'Tabungan',
-                        color: const Color(0xFFE8F5E9),
+                        label: AppLocalizations.of(context).translate('savings_count'),
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? const Color(0xFFE8F5E9)
+                            : const Color(0xFF4DB6AC).withOpacity(0.2),
                         iconColor: const Color(0xFF4DB6AC),
                       ),
                     ],
@@ -219,13 +273,12 @@ class ProfileScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // Info Section
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
@@ -238,18 +291,24 @@ class ProfileScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildMenuListItem(
+                          context: context,
                           icon: Icons.email_outlined,
-                          title: 'EMAIL',
-                          subtitle: user?.email ?? 'user@mock.com',
-                          iconBgColor: const Color(0xFFFCE4EC),
+                          title: AppLocalizations.of(context).translate('email_label'),
+                          subtitle: user?.email ?? '',
+                          iconBgColor: Theme.of(context).brightness == Brightness.light
+                              ? const Color(0xFFFCE4EC)
+                              : const Color(0xFFE93188).withOpacity(0.2),
                           iconColor: const Color(0xFFE93188),
                         ),
                         const Divider(height: 1, indent: 60),
                         _buildMenuListItem(
+                          context: context,
                           icon: Icons.currency_exchange_rounded,
-                          title: 'MATA UANG',
-                          subtitle: '${user?.currency ?? 'IDR'} — Rupiah Indonesia',
-                          iconBgColor: const Color(0xFFE8F5E9),
+                          title: AppLocalizations.of(context).translate('currency_label'),
+                          subtitle: '${user?.currency ?? 'IDR'}',
+                          iconBgColor: Theme.of(context).brightness == Brightness.light
+                              ? const Color(0xFFE8F5E9)
+                              : const Color(0xFF4DB6AC).withOpacity(0.2),
                           iconColor: const Color(0xFF4DB6AC),
                         ),
                       ],
@@ -259,13 +318,12 @@ class ProfileScreen extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                // Actions Section
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
@@ -278,22 +336,47 @@ class ProfileScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildActionListItem(
+                          icon: Icons.category_outlined,
+                          title: AppLocalizations.of(context).translate('manage_categories'),
+                          subtitle: AppLocalizations.of(context).translate('manage_categories_subtitle'),
+                          iconColor: const Color(0xFF4DB6AC),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CategoryListScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                        const Divider(height: 1, indent: 60),
+                        _buildActionListItem(
+                          icon: Icons.lock_reset_rounded,
+                          title: 'Ganti Password',
+                          subtitle: 'Perbarui password akun kamu',
+                          iconColor: const Color(0xFFE93188),
+                          onTap: () => _showChangePasswordDialog(context, authVM),
+                        ),
+                        const Divider(height: 1, indent: 60),
+                        _buildActionListItem(
                           icon: Icons.settings_outlined,
-                          title: 'Pengaturan',
-                          subtitle: 'Ubah preferensi aplikasi',
+                          title: AppLocalizations.of(context).translate('app_preferences'),
+                          subtitle: AppLocalizations.of(context).translate('app_preferences_subtitle'),
                           iconColor: const Color(0xFF9575CD),
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                              MaterialPageRoute(
+                                builder: (context) => const SettingsScreen(),
+                              ),
                             );
                           },
                         ),
                         const Divider(height: 1, indent: 60),
                         _buildActionListItem(
                           icon: Icons.info_outline_rounded,
-                          title: 'Tentang Aplikasi',
-                          subtitle: 'Versi 1.0.0',
+                          title: AppLocalizations.of(context).translate('about_app'),
+                          subtitle: AppLocalizations.of(context).translate('about_subtitle'),
                           iconColor: const Color(0xFF64B5F6),
                           onTap: () {
                             showAboutDialog(
@@ -311,7 +394,6 @@ class ProfileScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // Logout Button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: InkWell(
@@ -321,18 +403,23 @@ class ProfileScreen extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFFCE4EC), width: 2),
+                        border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? const Color(0xFFFCE4EC)
+                              : const Color(0xFFE93188).withOpacity(0.3),
+                          width: 2,
+                        ),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.logout_rounded, color: Color(0xFFE93188), size: 20),
-                          SizedBox(width: 8),
+                        children: [
+                          const Icon(Icons.logout_rounded, color: AppColors.error, size: 20),
+                          const SizedBox(width: 8),
                           Text(
-                            'Keluar dari Akun',
-                            style: TextStyle(
-                              color: Color(0xFFE93188),
+                            AppLocalizations.of(context).translate('logout'),
+                            style: const TextStyle(
+                              color: AppColors.error,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -344,9 +431,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 24),
-                const Text(
-                  'Finora · Versi 1.0.0',
-                  style: TextStyle(color: Colors.grey, fontSize: 13),
+                Text(
+                  'Finora · ${AppLocalizations.of(context).translate('about_subtitle')}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 13),
                 ),
                 const SizedBox(height: 40),
               ],
@@ -358,6 +445,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildStatCard({
+    required BuildContext context,
     required IconData icon,
     required String count,
     required String label,
@@ -368,7 +456,7 @@ class ProfileScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
@@ -408,6 +496,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildMenuListItem({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String subtitle,
@@ -437,10 +526,10 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 subtitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1C1E),
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
             ],
@@ -481,28 +570,310 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context, AuthViewModel authVM) {
+    final navigator = Navigator.of(context);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Keluar Akun?'),
-        content: const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(AppLocalizations.of(context).translate('logout_confirm_title')),
+        content: Text(AppLocalizations.of(context).translate('logout_confirm_message')),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(AppLocalizations.of(context).translate('cancel')),
           ),
           TextButton(
-            onPressed: () {
-              authVM.logout();
-              Navigator.pop(context);
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              await authVM.logout();
+              navigator.pushNamedAndRemoveUntil('/', (route) => false);
             },
-            child: const Text(
-              'Keluar',
-              style: TextStyle(color: AppColors.error),
+            child: Text(
+              AppLocalizations.of(context).translate('logout'),
+              style: const TextStyle(color: AppColors.error),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showEditProfileDialog(BuildContext context, AuthViewModel authVM) {
+    final nameController = TextEditingController(text: authVM.currentUser?.name);
+    final currencyController =
+    TextEditingController(text: authVM.currentUser?.currency);
+
+    showDialog(
+      context: context,
+      builder: (context) => Consumer<AuthViewModel>(
+        builder: (context, vm, child) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context).translate('edit_profile')),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context).translate('name')),
+                  enabled: !vm.isLoading,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: currencyController,
+                  decoration: InputDecoration(labelText: '${AppLocalizations.of(context).translate('currency_label')} (e.g. IDR)'),
+                  enabled: !vm.isLoading,
+                ),
+                if (vm.errorMessage != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    vm.errorMessage!,
+                    style: const TextStyle(color: AppColors.error, fontSize: 13),
+                  ),
+                ],
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: vm.isLoading ? null : () => Navigator.pop(context),
+                child: Text(AppLocalizations.of(context).translate('cancel')),
+              ),
+              TextButton(
+                onPressed: vm.isLoading
+                    ? null
+                    : () async {
+                  final success = await vm.updateProfile(
+                    name: nameController.text,
+                    currency: currencyController.text,
+                  );
+                  if (success && context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(AppLocalizations.of(context).translate('profile_updated_success'))),
+                    );
+                  }
+                },
+                child: vm.isLoading
+                    ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+                    : Text(AppLocalizations.of(context).translate('save')),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+  void _showChangePasswordDialog(BuildContext context, AuthViewModel authVM) {
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    bool isCurVisible = false;
+    bool isNewVisible = false;
+    bool isConfirmVisible = false;
+
+    // Reset state sebelum buka dialog
+    authVM.clearPasswordState();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          return Consumer<AuthViewModel>(
+            builder: (ctx, vm, _) {
+              // Tutup dialog otomatis saat sukses
+              if (vm.passwordSuccess) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (Navigator.canPop(ctx)) {
+                    Navigator.pop(ctx);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                            SizedBox(width: 8),
+                            Text('Password berhasil diubah!', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        backgroundColor: const Color(0xFF4DB6AC),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        margin: const EdgeInsets.all(16),
+                      ),
+                    );
+                    vm.clearPasswordState();
+                  }
+                });
+              }
+
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                title: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFCE4EC),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.lock_reset_rounded,
+                        color: Color(0xFFE93188),
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Ganti Password',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                content: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Password lama
+                      TextFormField(
+                        controller: currentPasswordController,
+                        obscureText: !isCurVisible,
+                        decoration: InputDecoration(
+                          labelText: 'Password Lama',
+                          prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isCurVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                              size: 18,
+                            ),
+                            onPressed: () => setDialogState(() => isCurVisible = !isCurVisible),
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'Wajib diisi';
+                          return null;
+                        },
+                        enabled: !vm.isPasswordLoading,
+                      ),
+                      const SizedBox(height: 16),
+                      // Password baru
+                      TextFormField(
+                        controller: newPasswordController,
+                        obscureText: !isNewVisible,
+                        decoration: InputDecoration(
+                          labelText: 'Password Baru',
+                          prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isNewVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                              size: 18,
+                            ),
+                            onPressed: () => setDialogState(() => isNewVisible = !isNewVisible),
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'Wajib diisi';
+                          if (v.length < 6) return 'Minimal 6 karakter';
+                          return null;
+                        },
+                        enabled: !vm.isPasswordLoading,
+                      ),
+                      const SizedBox(height: 16),
+                      // Konfirmasi password baru
+                      TextFormField(
+                        controller: confirmPasswordController,
+                        obscureText: !isConfirmVisible,
+                        decoration: InputDecoration(
+                          labelText: 'Konfirmasi Password Baru',
+                          prefixIcon: const Icon(Icons.lock_reset_rounded, size: 20),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isConfirmVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                              size: 18,
+                            ),
+                            onPressed: () => setDialogState(() => isConfirmVisible = !isConfirmVisible),
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'Wajib diisi';
+                          if (v != newPasswordController.text) return 'Password tidak cocok';
+                          return null;
+                        },
+                        enabled: !vm.isPasswordLoading,
+                      ),
+                      // Error message
+                      if (vm.passwordError != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFEBEE),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            vm.passwordError!,
+                            style: const TextStyle(
+                              color: Color(0xFFE53935),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: vm.isPasswordLoading
+                        ? null
+                        : () {
+                      Navigator.pop(ctx);
+                      vm.clearPasswordState();
+                    },
+                    child: const Text('Batal'),
+                  ),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFFE93188),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: vm.isPasswordLoading
+                        ? null
+                        : () async {
+                      if (!formKey.currentState!.validate()) return;
+                      await vm.changePassword(
+                        currentPassword: currentPasswordController.text,
+                        newPassword: newPasswordController.text,
+                      );
+                    },
+                    child: vm.isPasswordLoading
+                        ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                        : const Text(
+                      'Simpan',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
       ),
     );
   }
