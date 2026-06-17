@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_theme.dart';
+import '../../models/category_model.dart' as category_model;
 import '../../viewmodels/category_viewmodel.dart';
+import '../../l10n/app_localizations.dart';
 import 'add_category_screen.dart';
 
 class CategoryListScreen extends StatefulWidget {
@@ -35,13 +37,13 @@ class _CategoryListScreenState extends State<CategoryListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kategori'),
+        title: Text(AppLocalizations.of(context).translate('category')),
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Pemasukan'),
-            Tab(text: 'Pengeluaran'),
+          tabs: [
+            Tab(text: AppLocalizations.of(context).translate('income')),
+            Tab(text: AppLocalizations.of(context).translate('expense')),
           ],
         ),
       ),
@@ -64,10 +66,14 @@ class _CategoryListScreenState extends State<CategoryListScreen>
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddCategoryScreen()),
+            MaterialPageRoute(
+              builder: (context) => AddCategoryScreen(
+                initialType: _tabController.index == 0 ? 'income' : 'expense',
+              ),
+            ),
           );
         },
-        tooltip: 'Tambah Kategori',
+        tooltip: AppLocalizations.of(context).translate('add_category'),
         child: const Icon(Icons.add),
       ),
     );
@@ -82,13 +88,13 @@ class _CategoryListScreenState extends State<CategoryListScreen>
             Icon(
               Icons.category_outlined,
               size: 64,
-              color: AppColors.onSurface.withOpacity(0.3),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Belum ada kategori',
+              AppLocalizations.of(context).translate('no_categories'),
               style: AppTextStyles.body.copyWith(
-                color: AppColors.onSurface.withOpacity(0.6),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
             ),
           ],
@@ -109,23 +115,37 @@ class _CategoryListScreenState extends State<CategoryListScreen>
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.2),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.category_outlined,
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
-            title: Text(category.name, style: AppTextStyles.label),
+            title: Text(
+              AppLocalizations.getCategoryName(context, category.name),
+              style: AppTextStyles.label,
+            ),
+            subtitle: Text(
+              category.type == category_model.CategoryType.income
+                  ? AppLocalizations.of(context).translate('income')
+                  : AppLocalizations.of(context).translate('expense'),
+              style: AppTextStyles.body.copyWith(
+                fontSize: 12,
+                color: category.type == category_model.CategoryType.income
+                    ? AppColors.success
+                    : AppColors.error,
+              ),
+            ),
             trailing: PopupMenuButton(
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  child: const Row(
+                  child: Row(
                     children: [
                       Icon(Icons.edit_outlined, size: 20),
                       SizedBox(width: AppSpacing.md),
-                      Text('Edit'),
+                      Text(AppLocalizations.of(context).translate('edit')),
                     ],
                   ),
                   onTap: () {
@@ -139,29 +159,45 @@ class _CategoryListScreenState extends State<CategoryListScreen>
                   },
                 ),
                 PopupMenuItem(
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.delete_outline,
                         size: 20,
                         color: AppColors.error,
                       ),
-                      SizedBox(width: AppSpacing.md),
-                      Text('Hapus', style: TextStyle(color: AppColors.error)),
+                      const SizedBox(width: AppSpacing.md),
+                      Text(
+                        AppLocalizations.of(context).translate('delete'),
+                        style: const TextStyle(color: AppColors.error),
+                      ),
                     ],
                   ),
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Hapus Kategori?'),
+                        title: Text(
+                          AppLocalizations.of(
+                            context,
+                          ).translate('delete_category_confirm_title'),
+                        ),
                         content: Text(
-                          'Apakah Anda yakin ingin menghapus kategori ${category.name}?',
+                          AppLocalizations.of(context)
+                              .translate('delete_category_confirm_message')
+                              .replaceAll('{name}', category.name),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Batal'),
+                            child: Text(
+                              AppLocalizations.of(context).translate('cancel'),
+                              style: AppTextStyles.body.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.6),
+                              ),
+                            ),
                           ),
                           TextButton(
                             onPressed: () {
@@ -170,9 +206,9 @@ class _CategoryListScreenState extends State<CategoryListScreen>
                               );
                               Navigator.pop(context);
                             },
-                            child: const Text(
-                              'Hapus',
-                              style: TextStyle(color: AppColors.error),
+                            child: Text(
+                              AppLocalizations.of(context).translate('delete'),
+                              style: const TextStyle(color: AppColors.error),
                             ),
                           ),
                         ],

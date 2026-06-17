@@ -5,11 +5,13 @@ import '../../config/theme/app_theme.dart';
 import '../../models/category_model.dart';
 import '../../services/validators.dart';
 import '../../viewmodels/category_viewmodel.dart';
+import '../../l10n/app_localizations.dart';
 
 class AddCategoryScreen extends StatefulWidget {
   final Category? category;
+  final String? initialType;
 
-  const AddCategoryScreen({super.key, this.category});
+  const AddCategoryScreen({super.key, this.category, this.initialType});
 
   @override
   State<AddCategoryScreen> createState() => _AddCategoryScreenState();
@@ -18,7 +20,7 @@ class AddCategoryScreen extends StatefulWidget {
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
-  String _selectedType = 'expense';
+  late String _selectedType;
   Color _selectedColor = AppColors.primary;
   String? _selectedIcon;
 
@@ -37,6 +39,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.category?.name ?? '');
+    _selectedType = widget.initialType ?? 'expense';
+
     if (widget.category != null) {
       _selectedType = widget.category!.type.toString().split('.').last;
       _selectedIcon = widget.category!.icon;
@@ -64,7 +68,11 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Edit Kategori' : 'Tambah Kategori'),
+        title: Text(
+          isEditing
+              ? AppLocalizations.of(context).translate('edit_category')
+              : AppLocalizations.of(context).translate('add_category'),
+        ),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -74,13 +82,16 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Tipe Kategori', style: AppTextStyles.label),
+              Text(
+                AppLocalizations.of(context).translate('category_type'),
+                style: AppTextStyles.label,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   Expanded(
                     child: _buildTypeButton(
-                      label: 'Pemasukan',
+                      label: AppLocalizations.of(context).translate('income'),
                       value: 'income',
                       isSelected: _selectedType == 'income',
                       onPressed: () => setState(() => _selectedType = 'income'),
@@ -89,7 +100,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _buildTypeButton(
-                      label: 'Pengeluaran',
+                      label: AppLocalizations.of(context).translate('expense'),
                       value: 'expense',
                       isSelected: _selectedType == 'expense',
                       onPressed: () =>
@@ -99,18 +110,26 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text('Nama Kategori', style: AppTextStyles.label),
+              Text(
+                AppLocalizations.of(context).translate('category_name'),
+                style: AppTextStyles.label,
+              ),
               const SizedBox(height: AppSpacing.sm),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  hintText: 'Masukkan nama kategori',
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(
+                    context,
+                  ).translate('category_name_hint'),
                   prefixIcon: Icon(Icons.label_outlined),
                 ),
                 validator: Validators.validateNotEmpty,
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text('Warna Kategori', style: AppTextStyles.label),
+              Text(
+                AppLocalizations.of(context).translate('category_color'),
+                style: AppTextStyles.label,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Wrap(
                 spacing: AppSpacing.md,
@@ -175,8 +194,12 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                             )
                           : Text(
                               isEditing
-                                  ? 'Perbarui Kategori'
-                                  : 'Simpan Kategori',
+                                  ? AppLocalizations.of(
+                                      context,
+                                    ).translate('update_category')
+                                  : AppLocalizations.of(
+                                      context,
+                                    ).translate('save_category'),
                             ),
                     ),
                   );
@@ -198,10 +221,18 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? AppColors.primary : AppColors.surface,
-        foregroundColor: isSelected ? Colors.white : AppColors.onSurface,
+        backgroundColor: isSelected
+            ? AppColors.primary
+            : (Theme.of(context).brightness == Brightness.light
+                  ? AppColors.surface
+                  : const Color(0xFF2C2C2C)),
+        foregroundColor: isSelected
+            ? Colors.white
+            : Theme.of(context).colorScheme.onSurface,
         side: BorderSide(
-          color: isSelected ? AppColors.primary : AppColors.outline,
+          color: isSelected
+              ? AppColors.primary
+              : Theme.of(context).dividerColor,
         ),
       ),
       child: Padding(
@@ -231,7 +262,16 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
     if (!mounted) return;
 
-    if (success) {
+    if (success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).translate(
+              isEditing ? 'category_updated_success' : 'category_saved_success',
+            ),
+          ),
+        ),
+      );
       Navigator.pop(context);
     }
   }
