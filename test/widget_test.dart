@@ -8,28 +8,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:finora/services/preferences_service.dart';
 
 import 'package:finora/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App smoke test', (WidgetTester tester) async {
     // Setup mock SharedPreferences
     SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
+    final preferencesService = PreferencesService();
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(prefs: prefs));
+    await tester.pumpWidget(MyApp(preferencesService: preferencesService));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Since the app starts with a LoginScreen and uses localized strings,
+    // we just verify that MyApp can be built without errors.
+    expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
