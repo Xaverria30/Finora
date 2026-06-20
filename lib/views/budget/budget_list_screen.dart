@@ -4,8 +4,10 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_theme.dart';
 import '../../models/budget_model.dart';
 import '../../models/transaction_model.dart';
+import '../../utils/formatters.dart';
 import '../../viewmodels/budget_viewmodel.dart';
 import '../../viewmodels/transaction_viewmodel.dart';
+import '../../l10n/app_localizations.dart';
 import 'add_budget_screen.dart';
 
 class BudgetListScreen extends StatefulWidget {
@@ -28,7 +30,7 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFBFBFD),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer2<BudgetViewModel, TransactionViewModel>(
         builder: (context, budgetVM, transactionVM, _) {
           if (budgetVM.isLoading && budgetVM.budgets.isEmpty) {
@@ -39,35 +41,24 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
           double totalSpent = 0;
 
           for (var budget in budgetVM.budgets) {
-            totalBudget += (budget.limitAmount as num).toDouble();
-
-            final categoryTransactions = transactionVM.transactions
-                .where(
-                  (t) =>
-                      t.category == budget.categoryName &&
-                      t.type == TransactionType.expense,
-                )
-                .toList();
-
-            for (var tx in categoryTransactions) {
-              totalSpent += (tx.amount as num).toDouble();
-            }
+            totalBudget += budget.limitAmount;
+            totalSpent += budget.spent;
           }
 
           return ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             children: [
               const SizedBox(height: 20),
-              const Text(
-                'Anggaran',
+              Text(
+                AppLocalizations.of(context).translate('budget'),
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1C1E),
+                  color: Theme.of(context).textTheme.headlineMedium?.color,
                 ),
               ),
-              const Text(
-                'Kelola pengeluaran bulananmu',
+              Text(
+                AppLocalizations.of(context).translate('budget_subtitle'),
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey,
@@ -92,7 +83,7 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        'Belum ada anggaran',
+                        AppLocalizations.of(context).translate('no_budgets'),
                         style: AppTextStyles.body.copyWith(
                           color: AppColors.onSurface.withOpacity(0.6),
                         ),
@@ -108,23 +99,23 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                           );
                         },
                         icon: const Icon(Icons.add),
-                        label: const Text('Buat Anggaran'),
+                        label: Text(AppLocalizations.of(context).translate('create_budget')),
                       ),
                     ],
                   ),
                 )
               else
                 ...budgetVM.budgets.map((budget) {
-                  final spent = _calculateSpent(budget, transactionVM);
+                  final spent = budget.spent;
                   final health = budget.limitAmount > 0
-                      ? spent / budget.limitAmount.toDouble()
+                      ? spent / budget.limitAmount
                       : 0.0;
 
                   return _buildBudgetCard(
                     context,
                     budget,
                     spent,
-                    health.toDouble(),
+                    health,
                     budgetVM,
                   );
                 }).toList(),
@@ -139,27 +130,13 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
             MaterialPageRoute(builder: (context) => const AddBudgetScreen()),
           );
         },
-        tooltip: 'Tambah Anggaran',
+        tooltip: AppLocalizations.of(context).translate('add_budget_tooltip'),
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  double _calculateSpent(Budget budget, TransactionViewModel transactionVM) {
-    final categoryTransactions = transactionVM.transactions
-        .where(
-          (t) =>
-              t.category == budget.categoryName &&
-              t.type == TransactionType.expense,
-        )
-        .toList();
 
-    double spent = 0;
-    for (var tx in categoryTransactions) {
-      spent += tx.amount;
-    }
-    return spent;
-  }
 
   Widget _buildSummaryCard(double totalBudget, double totalSpent) {
     final progress = totalBudget > 0 ? (totalSpent / totalBudget).clamp(0.0, 1.0) : 0.0;
@@ -210,9 +187,9 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                     child: const Icon(Icons.bar_chart_rounded, color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'Ringkasan Anggaran Bulan Ini',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context).translate('monthly_budget_summary'),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -227,13 +204,13 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Total Anggaran',
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        Text(
+                          AppLocalizations.of(context).translate('total_budget'),
+                          style: const TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Rp${totalBudget.toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}',
+                          Formatters.formatCurrency(totalBudget),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -247,13 +224,13 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Terpakai',
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        Text(
+                          AppLocalizations.of(context).translate('total_spent'),
+                          style: const TextStyle(color: Colors.white70, fontSize: 13),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Rp${totalSpent.toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}',
+                          Formatters.formatCurrency(totalSpent),
                           style: const TextStyle(
                             color: Color(0xFFFFD54F),
                             fontSize: 20,
@@ -269,9 +246,9 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Progres',
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  Text(
+                    AppLocalizations.of(context).translate('overall_progress'),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                   Text(
                     '${(progress * 100).toStringAsFixed(1)}%',
@@ -323,13 +300,15 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
       iconData = Icons.directions_car_rounded;
     } else if (budget.categoryName.toLowerCase().contains('belanja')) {
       iconData = Icons.shopping_bag_rounded;
+    } else if (budget.categoryName.toLowerCase().contains('lainnya')) {
+      iconData = Icons.category_rounded;
     }
 
     return Container(
       margin: const EdgeInsets.only(top: 16),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
@@ -339,9 +318,25 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
           ),
         ],
       ),
-      child: Column(
-        children: [
-          Row(
+      child: InkWell(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => _buildBudgetDetail(
+              context,
+              budget,
+              spent,
+              health,
+              budgetVM,
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(30),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
@@ -357,15 +352,15 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      budget.categoryName,
-                      style: const TextStyle(
+                      AppLocalizations.getCategoryName(context, budget.categoryName),
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1C1E),
+                        color: Theme.of(context).textTheme.titleLarge?.color,
                       ),
                     ),
                     Text(
-                      'Rp${budget.limitAmount.toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')} / bulan',
+                      '${Formatters.formatCurrency(budget.limitAmount)} ${AppLocalizations.of(context).translate('per_month')}',
                       style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                     ),
                   ],
@@ -379,12 +374,12 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Icon(Icons.check_circle_outline_rounded, color: Color(0xFF4DB6AC), size: 14),
                     SizedBox(width: 4),
                     Text(
-                      'Aman',
-                      style: TextStyle(
+                      AppLocalizations.of(context).translate('safe'),
+                      style: const TextStyle(
                         color: Color(0xFF4DB6AC),
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -400,7 +395,9 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
             height: 10,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? const Color(0xFFF5F5F5)
+                  : const Color(0xFF2C2C2C),
               borderRadius: BorderRadius.circular(5),
             ),
             child: FractionallySizedBox(
@@ -421,17 +418,17 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'TERPAKAI',
-                    style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                  Text(
+                    AppLocalizations.of(context).translate('spent_caps'),
+                    style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Rp${spent.toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}',
-                    style: const TextStyle(
+                    Formatters.formatCurrency(spent),
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1C1E),
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                 ],
@@ -439,13 +436,13 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Text(
-                    'SISA',
-                    style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                  Text(
+                    AppLocalizations.of(context).translate('remaining_caps'),
+                    style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Rp${remaining.clamp(0, double.infinity).toStringAsFixed(0).replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}',
+                    Formatters.formatCurrency(remaining.clamp(0, double.infinity)),
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -456,7 +453,9 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
               ),
             ],
           ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -474,17 +473,17 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Detail Anggaran', style: AppTextStyles.headline),
+          Text(AppLocalizations.of(context).translate('budget_detail'), style: AppTextStyles.headline),
           const SizedBox(height: AppSpacing.lg),
-          _buildDetailRow('Kategori', budget.categoryName),
+          _buildDetailRow(AppLocalizations.of(context).translate('category'), AppLocalizations.getCategoryName(context, budget.categoryName)),
           _buildDetailRow(
-            'Anggaran',
-            'Rp${budget.limitAmount.toStringAsFixed(0)}',
+            AppLocalizations.of(context).translate('budget'),
+            Formatters.formatCurrency(budget.limitAmount),
           ),
-          _buildDetailRow('Terpakai', 'Rp${spent.toStringAsFixed(0)}'),
+          _buildDetailRow(AppLocalizations.of(context).translate('expense'), Formatters.formatCurrency(spent)),
           _buildDetailRow(
-            'Sisa',
-            'Rp${(budget.limitAmount - spent).toStringAsFixed(0)}',
+            AppLocalizations.of(context).translate('remaining_caps'),
+            Formatters.formatCurrency(budget.limitAmount - spent),
           ),
           const SizedBox(height: AppSpacing.lg),
           Row(
@@ -492,7 +491,7 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Tutup'),
+                  child: Text(AppLocalizations.of(context).translate('close')),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -503,23 +502,30 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Hapus Anggaran?'),
-                        content: const Text(
-                          'Apakah Anda yakin ingin menghapus anggaran ini?',
+                        title: Text(AppLocalizations.of(context).translate('delete_budget_confirm_title')),
+                        content: Text(
+                          AppLocalizations.of(context).translate('delete_budget_confirm_message'),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Batal'),
+                            child: Text(AppLocalizations.of(context).translate('cancel')),
                           ),
                           TextButton(
                             onPressed: () {
                               budgetVM.deleteBudget(budget.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    AppLocalizations.of(context).translate('budget_deleted'),
+                                  ),
+                                ),
+                              );
                               Navigator.pop(context);
                             },
-                            child: const Text(
-                              'Hapus',
-                              style: TextStyle(color: AppColors.error),
+                            child: Text(
+                              AppLocalizations.of(context).translate('delete'),
+                              style: const TextStyle(color: AppColors.error),
                             ),
                           ),
                         ],
@@ -527,7 +533,7 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                     );
                   },
                   icon: const Icon(Icons.delete_outline),
-                  label: const Text('Hapus'),
+                  label: Text(AppLocalizations.of(context).translate('delete')),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.error,
                     foregroundColor: Colors.white,
@@ -535,6 +541,27 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddBudgetScreen(budget: budget),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit_outlined),
+              label: Text(AppLocalizations.of(context).translate('edit_budget_amount')),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
