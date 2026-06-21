@@ -140,8 +140,16 @@ flutter pub get
 
 # Run application
 flutter run
-```
 
+# Open project folder
+cd Finora/Backend
+
+# Install dependencies
+npm install -g pnpm
+
+# Run application
+pnpm run dev
+```
 ---
 
 # 🎯 Project Objectives
