@@ -1,116 +1,114 @@
-# Finora
+# 💙 Finora
 
 <div align="center">
 
-### Personal Finance Mobile Application
+# Finora — Smart Personal Finance App
 
-A modern mobile application that helps users manage personal finances, track expenses, monitor savings goals, and build better financial habits.
+### *Manage • Track • Save • Grow*
 
-![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge\&logo=flutter\&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge\&logo=dart\&logoColor=white)
-![MVVM](https://img.shields.io/badge/MVVM-Architecture-success?style=for-the-badge)
-![SQLite](https://img.shields.io/badge/SQLite-Database-blue?style=for-the-badge)
+A modern mobile application that helps users manage personal finances, monitor expenses, achieve savings goals, and build better financial habits.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white">
+  <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white">
+  <img src="https://img.shields.io/badge/MVVM-Architecture-success?style=for-the-badge">
+  <img src="https://img.shields.io/badge/SQLite-Database-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Platform-Android-success?style=for-the-badge">
+</p>
+
+### 💰 Your Smart Financial Companion
+
+Helping users build better financial habits through technology.
 
 </div>
 
 ---
 
-## Overview
+## 📖 Overview
 
-Finora is a personal finance mobile application developed to help users manage their financial activities efficiently and securely. The application provides various features for recording transactions, monitoring savings goals, categorizing expenses, and visualizing financial information through an intuitive user interface.
-
----
-
-## Application Screenshots
-
-<table align="center">
-<tr>
-<td align="center">
-<img src="Screenshots/dashboard.jpeg" width="220"><br>
-<b>Dashboard</b>
-</td>
-
-<td align="center">
-<img src="Screenshots/transaksi.jpeg" width="220"><br>
-<b>Transaction</b>
-</td>
-
-<td align="center">
-<img src="Screenshots/profil.jpeg" width="220"><br>
-<b>Profile</b>
-</td>
-</tr>
-</table>
+Finora is a personal finance mobile application developed to help users manage their finances efficiently and securely. The application allows users to track income and expenses, monitor savings goals, analyze spending habits, and maintain financial awareness through an intuitive and user-friendly interface.
 
 ---
 
-## Key Features
+## ✨ Key Features
 
-### Authentication System
+### 🔐 Authentication System
 
-* User registration and login.
-* Secure authentication system.
-* Account management.
+* User registration and login
+* Secure authentication process
+* Account management
 
-### Financial Dashboard
+### 📊 Financial Dashboard
 
-* Display account balance.
-* Monitor income and expenses.
-* Financial summaries and statistics.
+* Display current balance
+* Income and expense summaries
+* Financial statistics visualization
 
-### Transaction Management
+### 💸 Transaction Management
 
-* Record income and expenses.
-* Categorize transactions.
-* Edit and delete transaction history.
+* Record income transactions
+* Record expense transactions
+* Edit and delete transaction history
+* Transaction categorization
 
-### Savings Goals
+### 🎯 Savings Goals
 
-* Set financial targets.
-* Monitor savings progress.
-* Real-time progress tracking.
+* Set financial targets
+* Track saving progress
+* Monitor achievement status
 
-### User Profile
+### 👤 User Profile
 
-* View and update personal information.
-* Change account credentials.
-* Manage user settings.
+* View personal information
+* Update account details
+* Manage user settings
 
-### Notifications
+### 🔔 Notifications
 
-* Financial reminders.
-* Transaction updates.
-* Activity notifications.
+* Financial reminders
+* Transaction updates
+* Activity notifications
 
 ---
 
-## System Architecture
+## 📱 Application Screenshots
 
-Finora implements the **Model-View-ViewModel (MVVM)** architecture combined with the **Repository Pattern** to ensure clean code structure and maintainability.
+<div align="center">
 
-### Architecture Layers
+|                      Dashboard                     |                    Transactions                    |                     Profile                     |
+| :------------------------------------------------: | :------------------------------------------------: | :---------------------------------------------: |
+| <img src="Screenshots/dashboard.jpeg" width="220"> | <img src="Screenshots/transaksi.jpeg" width="220"> | <img src="Screenshots/profil.jpeg" width="220"> |
+|                   Dashboard Page                   |                  Transaction Page                  |                   Profile Page                  |
 
-* View (Activity / Fragment)
-* ViewModel
-* Repository
-* Model
-* SQLite Database
-* API Service
-* Backend Service
+</div>
+
+---
+
+## 🏗️ System Architecture
+
+Finora implements the **Model-View-ViewModel (MVVM)** architecture along with the **Repository Pattern** to ensure maintainable and scalable code.
 
 ```text
-Presentation Layer
-        ↓
-     ViewModel
-        ↓
-     Repository
-        ↓
-Database / API Service
+┌────────────────────┐
+│   Presentation UI  │
+└─────────┬──────────┘
+          │
+┌─────────▼──────────┐
+│     ViewModel      │
+└─────────┬──────────┘
+          │
+┌─────────▼──────────┐
+│     Repository     │
+└─────────┬──────────┘
+          │
+┌─────────▼──────────┐
+│ Database / API     │
+└────────────────────┘
 ```
 
 ---
 
-## Technologies
+## ⚙️ Technology Stack
 
 | Technology         | Description                     |
 | ------------------ | ------------------------------- |
@@ -118,47 +116,47 @@ Database / API Service
 | Dart               | Programming language            |
 | SQLite             | Local database                  |
 | MVVM               | Application architecture        |
-| Repository Pattern | Data management approach        |
+| Repository Pattern | Data management                 |
 | REST API           | Backend communication           |
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
 ```text
 Finora/
 │
-├── Backend/          # Backend services
-├── Frontend/         # Mobile application source code
-├── DetailsPage/      # Additional application pages
-├── Screenshots/      # Application screenshots
+├── Backend/              # Backend services
+├── Frontend/             # Flutter application source code
+├── DetailsPage/          # Additional application pages
+├── Screenshots/          # Application screenshots
 │
 └── README.md
 ```
 
 ---
 
-## Installation
+## 🚀 Installation
 
-Clone the repository:
+### Clone Repository
 
 ```bash
 git clone https://github.com/username/finora.git
 ```
 
-Navigate to the project directory:
+### Navigate to Project Folder
 
 ```bash
 cd finora/Frontend
 ```
 
-Install dependencies:
+### Install Dependencies
 
 ```bash
 flutter pub get
 ```
 
-Run the application:
+### Run Application
 
 ```bash
 flutter run
@@ -166,20 +164,39 @@ flutter run
 
 ---
 
-## Future Enhancements
+## 🎯 Future Enhancements
 
-* Budget planning and analysis.
-* Financial report generation.
-* Cloud synchronization.
-* Dark mode support.
-* Financial insights and analytics.
+* 📈 Financial analytics dashboard
+* ☁️ Cloud synchronization
+* 🌙 Dark mode support
+* 📄 Export financial reports
+* 🤖 Smart financial insights
+* 🔔 Advanced notifications
+
+---
+
+## 📊 Project Objectives
+
+* Improve financial awareness.
+* Help users track income and expenses.
+* Encourage healthy saving habits.
+* Provide simple financial management tools.
+* Deliver an intuitive user experience.
+
+---
+
+## 👨‍💻 Development Team
+
+Developed as a mobile application project focused on personal financial management using modern software architecture and Flutter technology.
 
 ---
 
 <div align="center">
 
-### 💙 Finora — Your Smart Financial Companion
+## 💙 Finora
 
-Helping users build better financial habits through technology.
+### Your Smart Financial Companion
+
+*Track your money, achieve your goals, and build better financial habits.*
 
 </div>
