@@ -22,8 +22,8 @@ Finora adalah aplikasi mobile yang dirancang untuk membantu pengguna mengelola k
 - **Target Tabungan**  
   Tentukan tujuan finansial seperti dana darurat atau kebutuhan masa depan. Perkembangan tabungan ditampilkan dalam progress bar real-time.
 
-- **Notifikasi & Pengingat**  
-  Pengingat otomatis terkait batas budget, budget terlampaui, catatan transaksi, dan ringkasan keuangan agar pengguna tetap disiplin.
+- **Notifikasi**  
+  Pemberitahuan otomatis terkait arus masuk dan keluar keuangan dari pengguna.
 
 - **Edit / Hapus Transaksi**  
   Memperbaiki atau menghapus transaksi untuk menjaga keakuratan data keuangan.
