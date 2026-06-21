@@ -27,8 +27,7 @@
 [Features](#-features) •
 [Screenshots](#-application-screenshots) •
 [Architecture](#️-system-architecture) •
-[Installation](#-installation) •
-[Team](#-development-team)
+[Installation](#-installation)
 
 </div>
 
