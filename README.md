@@ -9,7 +9,6 @@ Finora adalah aplikasi mobile yang dirancang untuk membantu pengguna mengelola k
 
 - **Login & Register**  
   Akses aman untuk pengguna baru dan lama. Pengguna baru dapat mendaftar dengan nama, email, dan kata sandi. Sistem autentikasi memastikan hanya pengguna terverifikasi yang bisa mengakses aplikasi.
-    <img src="./DetailsPage/reset-password.png" alt="Tampilan Login" width="280">
 
 - **Dashboard Keuangan**  
   Halaman utama menampilkan ringkasan finansial, total saldo, pemasukan, pengeluaran, dan distribusi per kategori dalam bentuk grafik interaktif.
@@ -25,7 +24,6 @@ Finora adalah aplikasi mobile yang dirancang untuk membantu pengguna mengelola k
 
 - **Notifikasi**  
   Pemberitahuan otomatis terkait arus masuk dan keluar keuangan dari pengguna.
-  <img src="./DetailsPage/notif-hsitory.png" alt="Tampilan Login" width="280">
 
 - **Edit / Hapus Transaksi**  
   Memperbaiki atau menghapus transaksi untuk menjaga keakuratan data keuangan.
