@@ -1,71 +1,185 @@
-# finora
+# Finora
 
-# Finora - Personal Finance Mobile App
+<div align="center">
 
-Finora adalah aplikasi mobile yang dirancang untuk membantu pengguna mengelola keuangan pribadi secara menyeluruh, aman, dan efisien. Aplikasi ini memungkinkan pengguna mencatat pemasukan dan pengeluaran, menetapkan budget, memantau target tabungan, dan mendapatkan notifikasi real-time agar keuangan tetap terkontrol dan terstruktur.
----
+### Personal Finance Mobile Application
 
-## Fitur Utama
+A modern mobile application that helps users manage personal finances, track expenses, monitor savings goals, and build better financial habits.
 
-- **Login & Register**  
-  Akses aman untuk pengguna baru dan lama. Pengguna baru dapat mendaftar dengan nama, email, dan kata sandi. Sistem autentikasi memastikan hanya pengguna terverifikasi yang bisa mengakses aplikasi.
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge\&logo=flutter\&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge\&logo=dart\&logoColor=white)
+![MVVM](https://img.shields.io/badge/MVVM-Architecture-success?style=for-the-badge)
+![SQLite](https://img.shields.io/badge/SQLite-Database-blue?style=for-the-badge)
 
-- **Dashboard Keuangan**  
-  Halaman utama menampilkan ringkasan finansial, total saldo, pemasukan, pengeluaran, dan distribusi per kategori dalam bentuk grafik interaktif.
-
-- **Pencatatan Pemasukan & Pengeluaran**  
-  Pengguna dapat mencatat setiap transaksi harian dengan detail kategori, nominal, tanggal, dan catatan tambahan. Data tersimpan di database untuk analisis lebih lanjut.
-
-- **Profil Pengguna**  
-  Kelola informasi akun, update data pribadi, dan ubah kata sandi secara mandiri:contentReference[oaicite:4]{index=4}.
-
-- **Target Tabungan**  
-  Tentukan tujuan finansial seperti dana darurat atau kebutuhan masa depan. Perkembangan tabungan ditampilkan dalam progress bar real-time.
-
-- **Notifikasi**  
-  Pemberitahuan otomatis terkait arus masuk dan keluar keuangan dari pengguna.
-
-- **Edit / Hapus Transaksi**  
-  Memperbaiki atau menghapus transaksi untuk menjaga keakuratan data keuangan.
-
-- **Kategori Transaksi**  
-  Mengelompokkan pemasukan dan pengeluaran berdasarkan jenis, misal makanan, transportasi, hiburan, atau gaji. Bisa ditambah atau disesuaikan oleh pengguna.
----
-
-## Arsitektur Sistem
-
-Finora menggunakan arsitektur **MVVM + Repository Pattern** untuk memisahkan UI, logika bisnis, dan sumber data agar lebih terstruktur dan mudah dipelihara.  
-Lapisan utama:
-- **Activity / Fragment** → halaman yang dilihat pengguna  
-- **ViewModel** → penghubung UI dan data  
-- **Repository** → pengelola aliran data  
-- **Model** → struktur data aplikasi  
-- **Room / SQLite** → penyimpanan lokal  
-- **Remote Data Source / Retrofit** → akses API/server  
-- **Webservice** → layanan backend
-
+</div>
 
 ---
 
-## Role Pengguna
-Pengguna adalah peran utama aplikasi. Seluruh fitur dirancang untuk mendukung aktivitas finansial mereka sehari-hari, termasuk pencatatan transaksi, pengaturan budget, dan pemantauan target tabungan.
+## Overview
+
+Finora is a personal finance mobile application developed to help users manage their financial activities efficiently and securely. The application provides various features for recording transactions, monitoring savings goals, categorizing expenses, and visualizing financial information through an intuitive user interface.
 
 ---
 
-## Instalasi
-1. Clone repo:
-   ```bash
-   git clone https://github.com/username/Finora.git
+## Application Screenshots
 
-## Getting Started
+<table align="center">
+<tr>
+<td align="center">
+<img src="Screenshots/dashboard.jpeg" width="220"><br>
+<b>Dashboard</b>
+</td>
 
-This project is a starting point for a Flutter application.
+<td align="center">
+<img src="Screenshots/transaksi.jpeg" width="220"><br>
+<b>Transaction</b>
+</td>
 
-A few resources to get you started if this is your first Flutter project:
+<td align="center">
+<img src="Screenshots/profil.jpeg" width="220"><br>
+<b>Profile</b>
+</td>
+</tr>
+</table>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Key Features
+
+### Authentication System
+
+* User registration and login.
+* Secure authentication system.
+* Account management.
+
+### Financial Dashboard
+
+* Display account balance.
+* Monitor income and expenses.
+* Financial summaries and statistics.
+
+### Transaction Management
+
+* Record income and expenses.
+* Categorize transactions.
+* Edit and delete transaction history.
+
+### Savings Goals
+
+* Set financial targets.
+* Monitor savings progress.
+* Real-time progress tracking.
+
+### User Profile
+
+* View and update personal information.
+* Change account credentials.
+* Manage user settings.
+
+### Notifications
+
+* Financial reminders.
+* Transaction updates.
+* Activity notifications.
+
+---
+
+## System Architecture
+
+Finora implements the **Model-View-ViewModel (MVVM)** architecture combined with the **Repository Pattern** to ensure clean code structure and maintainability.
+
+### Architecture Layers
+
+* View (Activity / Fragment)
+* ViewModel
+* Repository
+* Model
+* SQLite Database
+* API Service
+* Backend Service
+
+```text
+Presentation Layer
+        ↓
+     ViewModel
+        ↓
+     Repository
+        ↓
+Database / API Service
+```
+
+---
+
+## Technologies
+
+| Technology         | Description                     |
+| ------------------ | ------------------------------- |
+| Flutter            | Cross-platform mobile framework |
+| Dart               | Programming language            |
+| SQLite             | Local database                  |
+| MVVM               | Application architecture        |
+| Repository Pattern | Data management approach        |
+| REST API           | Backend communication           |
+
+---
+
+## Project Structure
+
+```text
+Finora/
+│
+├── Backend/          # Backend services
+├── Frontend/         # Mobile application source code
+├── DetailsPage/      # Additional application pages
+├── Screenshots/      # Application screenshots
+│
+└── README.md
+```
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/username/finora.git
+```
+
+Navigate to the project directory:
+
+```bash
+cd finora/Frontend
+```
+
+Install dependencies:
+
+```bash
+flutter pub get
+```
+
+Run the application:
+
+```bash
+flutter run
+```
+
+---
+
+## Future Enhancements
+
+* Budget planning and analysis.
+* Financial report generation.
+* Cloud synchronization.
+* Dark mode support.
+* Financial insights and analytics.
+
+---
+
+<div align="center">
+
+### 💙 Finora — Your Smart Financial Companion
+
+Helping users build better financial habits through technology.
+
+</div>
