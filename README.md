@@ -6,7 +6,7 @@
 
 **The smart personal finance app that turns spending chaos into financial confidence.**
 
-<p align="center">
+<p>
   <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white">
   <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white">
   <img src="https://img.shields.io/badge/MVVM-Architecture-success?style=for-the-badge">
@@ -14,174 +14,155 @@
   <img src="https://img.shields.io/badge/Platform-Android-success?style=for-the-badge">
 </p>
 
-<p align="center">
+<p>
   <img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square">
   <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/PRs-welcome-orange?style=flat-square">
 </p>
 
-<br>
-
-**[📥 Install](#-installation) · [✨ Features](#-key-features) · [📱 Screenshots](#-application-screenshots) · [🏗️ Architecture](#️-system-architecture) · [🛣️ Roadmap](#-future-enhancements)**
+[📥 Installation](#-installation) •
+[✨ Features](#-key-features) •
+[📱 Screenshots](#-application-screenshots) •
+[🏗 Architecture](#-system-architecture) •
+[🛣 Roadmap](#-future-enhancements)
 
 </div>
 
 ---
 
-## 💭 Why Finora?
+# 💭 Why Finora?
 
-Most people don't lose money because they earn too little. They lose track of where it goes. Finora closes that gap with a clear, real time picture of your money, right in your pocket. No spreadsheets, no guesswork, no end of month panic.
+Most people don't lose money because they earn too little — they lose track of where it goes.
 
-> *"You can't grow what you can't see. Finora makes your finances visible, and your goals achievable."*
+Finora provides a clear, real-time overview of your finances, helping users monitor spending habits, manage income, and achieve financial goals directly from their smartphones.
 
----
-
-## ✨ Key Features
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### 🔐 Authentication System
-Secure registration, login, and account management. Your financial data is protected from the first tap.
-
-### 📊 Financial Dashboard
-A real time snapshot of your balance, income, and expenses, visualized so you understand it at a glance.
-
-### 💸 Transaction Management
-Log income and expenses in seconds. Edit, delete, and categorize transactions to keep your history clean.
-
-</td>
-<td width="50%" valign="top">
-
-### 🎯 Savings Goals
-Set a target, watch your progress bar fill, and stay motivated to actually hit it.
-
-### 👤 User Profile
-View and update your personal information and settings in one simple, organized space.
-
-### 🔔 Smart Notifications
-Gentle reminders and timely updates that keep you engaged with your money, without the noise.
-
-</td>
-</tr>
-</table>
+> *"You can't grow what you can't see. Finora makes your finances visible and your goals achievable."*
 
 ---
 
-## 📱 Application Screenshots
+# ✨ Key Features
+
+| Feature                   | Description                                          |
+| ------------------------- | ---------------------------------------------------- |
+| 🔐 Authentication System  | Secure login, registration, and account management.  |
+| 📊 Financial Dashboard    | Real-time overview of income, expenses, and balance. |
+| 💸 Transaction Management | Add, edit, delete, and categorize transactions.      |
+| 🎯 Savings Goals          | Track progress toward financial targets.             |
+| 👤 User Profile           | Manage personal information and preferences.         |
+| 🔔 Smart Notifications    | Receive reminders and financial updates.             |
+
+---
+
+# 📱 Application Screenshots
 
 <div align="center">
 
 |                      Dashboard                     |                    Transactions                    |                     Profile                     |
 | :------------------------------------------------: | :------------------------------------------------: | :---------------------------------------------: |
 | <img src="Screenshots/dashboard.jpeg" width="220"> | <img src="Screenshots/transaksi.jpeg" width="220"> | <img src="Screenshots/profil.jpeg" width="220"> |
-|                 💰 Your money, at a glance          |               🧾 Every transaction, tracked         |              👤 Your profile, your control       |
+|                💰 Financial Overview               |               🧾 Transaction Tracking              |                👤 User Management               |
 
 </div>
 
 ---
 
-## 🏗️ System Architecture
+# 🏗 System Architecture
 
-Finora follows the MVVM (Model View ViewModel) pattern combined with the Repository Pattern, keeping the codebase clean, testable, and built to scale as new features come online.
+Finora implements the **MVVM (Model-View-ViewModel)** architecture combined with the **Repository Pattern** to ensure scalability, maintainability, and clean code practices.
 
 ```text
-┌──────────────────────┐
-│   Presentation UI     │   What users see and touch
-└──────────┬────────────┘
-           │
-┌──────────▼────────────┐
-│      ViewModel         │   UI logic and state
-└──────────┬────────────┘
-           │
-┌──────────▼────────────┐
-│      Repository        │   Single source of truth
-└──────────┬────────────┘
-           │
-┌──────────▼────────────┐
-│   Database / API       │   Where the data lives
-└────────────────────────┘
+┌────────────────────┐
+│    Presentation    │
+│       (UI)         │
+└─────────┬──────────┘
+          │
+┌─────────▼──────────┐
+│     ViewModel      │
+│ Business Logic     │
+└─────────┬──────────┘
+          │
+┌─────────▼──────────┐
+│    Repository      │
+│   Data Handling    │
+└─────────┬──────────┘
+          │
+┌─────────▼──────────┐
+│ Database / API     │
+└────────────────────┘
 ```
 
 ---
 
-## ⚙️ Technology Stack
+# ⚙️ Technology Stack
 
-| Technology | Role |
-|---|---|
-| 🐦 Flutter | Cross platform mobile framework |
-| 🎯 Dart | Programming language |
-| 🗄️ SQLite | Local database |
-| 🧩 MVVM | Application architecture |
-| 📦 Repository Pattern | Data management layer |
-| 🌐 REST API | Backend communication |
+| Technology            | Purpose                           |
+| --------------------- | --------------------------------- |
+| 🐦 Flutter            | Cross-platform mobile development |
+| 🎯 Dart               | Programming language              |
+| 🗄 SQLite             | Local database                    |
+| 🧩 MVVM               | Software architecture             |
+| 📦 Repository Pattern | Data management                   |
+| 🌐 REST API           | Backend communication             |
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
 ```text
 Finora/
 │
-├── Backend/              # Backend services
-├── Frontend/              # Flutter application source code
-├── DetailsPage/           # Additional application pages
-├── Screenshots/           # Application screenshots
+├── Backend/         # Backend services
+├── Frontend/        # Flutter application
+├── DetailsPage/     # Additional pages
+├── Screenshots/     # Application screenshots
 │
 └── README.md
 ```
 
 ---
 
-## 🚀 Installation
-
-Get Finora running locally in under a minute.
+# 🚀 Installation
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/username/finora.git
+# Clone repository
+git clone https://github.com/Xaverria30/Finora.git
 
-# 2. Move into the project folder
-cd finora/Frontend
+# Enter frontend folder
+cd Finora/Frontend
 
-# 3. Install dependencies
+# Install dependencies
 flutter pub get
 
-# 4. Run the app
+# Run application
 flutter run
 ```
 
-That's it. You're ready to start taking control of your finances. 🎉
+---
+
+# 🎯 Project Objectives
+
+* Improve users' financial awareness.
+* Help users monitor income and expenses.
+* Encourage consistent saving habits.
+* Provide accessible financial management tools.
+* Deliver a simple and intuitive user experience.
 
 ---
 
-## 🛣️ Future Enhancements
+# 🛣 Future Enhancements
 
-Finora is just getting started. Here's what's on the horizon.
-
-- 📈 **Financial analytics dashboard** for deeper insight into spending trends
-- ☁️ **Cloud synchronization** so your data is available everywhere
-- 🌙 **Dark mode** that's easy on the eyes, day or night
-- 📄 **Export financial reports** to share or archive your data effortlessly
-- 🤖 **Smart financial insights** with AI driven tips tailored to your habits
-- 🔔 **Advanced notifications** that are smarter and more contextual
+* 📈 Financial analytics dashboard
+* ☁️ Cloud synchronization
+* 🌙 Dark mode
+* 📄 Export financial reports
+* 🤖 AI-powered financial insights
+* 🔔 Advanced smart notifications
 
 ---
 
-## 🎯 Project Objectives
+# 👨‍💻 Development Team
 
-- Improve financial awareness, one transaction at a time
-- Help users track income and expenses without friction
-- Encourage healthy, lasting saving habits
-- Provide simple, powerful financial management tools
-- Deliver an intuitive, delightful user experience
-
----
-
-## 👨‍💻 Development Team
-
-Built as a mobile application project focused on personal financial management, combining modern software architecture with Flutter's cross platform power.
+Finora was developed as a mobile application project focused on personal financial management using modern software architecture and Flutter technology.
 
 ---
 
@@ -191,8 +172,8 @@ Built as a mobile application project focused on personal financial management, 
 
 ### Your Smart Financial Companion
 
-*Track your money, achieve your goals, and build better financial habits, starting today.*
+*Track your money, achieve your goals, and build better financial habits.*
 
-⭐ If Finora helped you, consider starring the repo! ⭐
+⭐ **If you like this project, don't forget to give it a star!** ⭐
 
 </div>
